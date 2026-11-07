@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concept2 PM5 - Rowing Game Telemetry</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151c2e;
+      --card-border: #233052;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.35);
+      --c2-orange: #f97316;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 16px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 16px;
+    }
+
+    .logo-area h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-badge {
+      background: var(--c2-orange);
+      color: white;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .btn-success {
+      background: #15803d;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #166534;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: #1e293b;
+    }
+
+    /* Modal styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 14px;
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: white;
+      font-size: 0.95rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .workout-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 20px;
+      gap: 12px;
+    }
+
+    .workout-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+    }
+
+    .rec-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #6b7280;
+    }
+
+    .rec-indicator.recording {
+      background: #ef4444;
+      animation: pulse 1s infinite alternate;
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .summary-item {
+      background: #090d16;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    .summary-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .summary-val {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      margin-top: 4px;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Connection Status */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #64748b;
+    }
+
+    .status-dot.connected {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .status-dot.connecting {
+      background: #eab308;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from {
+        opacity: 0.4;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Primary Big Metric */
+    .hero-metric {
+      background: linear-gradient(145deg, #162038, #0e1628);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-metric::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--c2-orange), var(--accent));
+    }
+
+    .hero-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .hero-value {
+      font-size: 4.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .hero-unit {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* Grid of Secondary Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .card-label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .card-subtext {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 6px;
+    }
+
+    /* Stroke Visualization / Mini Game Preview */
+    .visualizer-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .visualizer-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .track {
+      background: #090d16;
+      border-radius: 8px;
+      height: 60px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+    }
+
+    .boat {
+      position: absolute;
+      left: 10px;
+      width: 44px;
+      height: 28px;
+      background: var(--c2-orange);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 12px rgba(249, 115, 22, 0.6);
+      transition: left 0.3s ease-out;
+    }
+
+    .finish-line {
+      position: absolute;
+      right: 20px;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: repeating-linear-gradient(0deg,
+          #fff,
+          #fff 6px,
+          #000 6px,
+          #000 12px);
+    }
+
+    /* Info / Warnings */
+    .info-callout {
+      background: rgba(30, 41, 59, 0.7);
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .info-callout strong {
+      color: var(--text-main);
+    }
+
+    .state-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      background: #1e293b;
+      color: #cbd5e1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo-area">
+        <h1>Concept2 RowErg <span class="logo-badge">PM5 BLE</span></h1>
+        <div class="subtitle">Rowing Game - Realtime Telemetry & Game Bridge</div>
+      </div>
+
+      <div class="controls">
+        <button id="btnConnect" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 7l10 10-5 5V2l5 5L7 17" />
+          </svg>
+          Připojit PM5
+        </button>
+        <button id="btnConnectAll" class="btn-secondary" title="Zobrazí všechna BT zařízení v okolí">
+          Hledat vše
+        </button>
+        <button id="btnSimulate" class="btn-secondary">
+          Demo
+        </button>
+        <button id="btnLogbook" class="btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+          <span id="logbookBtnText">Logbook</span>
+        </button>
+        <button id="btnDisconnect" class="btn-danger" style="display: none;">
+          Odpojit
+        </button>
+      </div>
+    </header>
+
+    <div class="status-bar">
+      <div id="statusDot" class="status-dot"></div>
+      <span id="statusText">Odpojeno. Ujistěte se, že je PM5 zapnutý a není k němu připojená jiná aplikace (např.
+        ErgData).</span>
+    </div>
+
+    <!-- Záznam tréninku / Workout relace -->
+    <div class="workout-bar">
+      <div class="workout-info">
+        <div id="recIndicator" class="rec-indicator"></div>
+        <span id="workoutStatusText">Trénink nepřihlášen. Začněte veslovat nebo klikněte na Start.</span>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="btnStartWorkout" class="btn-success" style="padding: 6px 14px; font-size: 0.85rem;">
+          ▶ Začít trénink
+        </button>
+        <button id="btnFinishWorkout" class="btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;" disabled>
+          ⏹ Ukončit & Odeslat
+        </button>
+      </div>
+    </div>
+
+    <!-- Hlavní dominantní metrika: PACE -->
+    <div class="hero-metric">
+      <div class="hero-label">Aktuální tempo</div>
+      <div class="hero-value" id="valPace">--:--.-</div>
+      <div class="hero-unit">/ 500 m</div>
+    </div>
+
+    <!-- Mřížka dalších realtime metrik -->
+    <div class="metrics-grid">
+      <div class="card">
+        <div class="card-label">Výkon</div>
+        <div class="card-value" id="valWatts">0 <span style="font-size: 1.1rem; color: var(--text-muted);">W</span>
+        </div>
+        <div class="card-subtext" id="valCalories">0 Cal/hod</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Frekvence záběrů</div>
+        <div class="card-value" id="valSpm">0 <span style="font-size: 1.1rem; color: var(--text-muted);">SPM</span>
+        </div>
+        <div class="card-subtext">Fáze: <span id="valStrokeState" class="state-badge">Čekání</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Vzdálenost</div>
+        <div class="card-value" id="valDistance">0 <span style="font-size: 1.1rem; color: var(--text-muted);">m</span>
+        </div>
+        <div class="card-subtext" id="valRemaining">Celkem</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Uplynulý čas</div>
+        <div class="card-value" id="valTime">00:00.0</div>
+        <div class="card-subtext">
+          Tep: <span id="valHeartRate">-- bpm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Malá herní vizualizace: loďka posouvající se podle vzdálenosti a tempa -->
+    <div class="visualizer-section">
+      <div class="visualizer-header">
+        <span>Herní mini-náhled (Závodní dráha na 500 m)</span>
+        <span id="trackProgress">0 %</span>
+      </div>
+      <div class="track">
+        <div id="boat" class="boat">🚣</div>
+        <div class="finish-line"></div>
+      </div>
+    </div>
+
+    <!-- Upozornění a instrukce k použití -->
+    <div class="info-callout">
+      <strong>Poznámka k Web Bluetooth:</strong> Tato technologie funguje v moderních prohlížečích (Chrome, Edge, Opera)
+      přes zabezpečené připojení (localhost nebo HTTPS).<br>
+      Pokud je k PM5 zrovna připojen mobil s <strong>ErgData</strong>, PM5 nepovolí další Bluetooth spojení. V takovém
+      případě v ErgData odpojte trenažér nebo vypněte Bluetooth na telefonu.
+    </div>
+    <!-- MODAL: Nastavení Concept2 Logbook -->
+    <div id="modalLogbook" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>Concept2 Online Logbook</h2>
+          <button class="modal-close" onclick="closeModal('modalLogbook')">&times;</button>
+        </div>
+
+        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+          Pro přímé odesílání tréninků bez nutnosti mít spuštěná ErgData potřebujete svůj <strong>Personal Access
+            Token</strong> z webu Concept2.
+        </div>
+
+        <div class="info-callout" style="margin-bottom: 16px; font-size: 0.8rem;">
+          <strong>Jak získat token:</strong><br>
+          1. Přihlaste se na <a href="https://log.concept2.com/profile/edit" target="_blank"
+            style="color: var(--accent);">log.concept2.com/profile/edit</a>.<br>
+          2. Klikněte na záložku <strong>Applications</strong>.<br>
+          3. V sekci <em>Personal Access Tokens</em> klikněte na <strong>Create New Token</strong>.<br>
+          4. Zkopírujte vygenerovaný token a vložte jej níže.
+        </div>
+
+        <div class="form-group">
+          <label for="inputC2Token">Váš Personal Access Token</label>
+          <input type="password" id="inputC2Token" class="form-input"
+            placeholder="Vložte sem token (např. 2|abc123xyz...)">
+        </div>
+
+        <div id="logbookStatusMsg" style="margin-bottom: 16px; font-size: 0.85rem; display: none;"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+          <button id="btnVerifyToken" class="btn-primary" style="padding: 8px 16px;">
+            Ověřit & Uložit
+          </button>
+          <button class="btn-outline" onclick="closeModal('modalLogbook')" style="padding: 8px 16px;">
+            Zavřít
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Shrnutí tréninku & Odeslání -->
+    <div id="modalWorkoutSummary" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h2>Shrnutí tréninku</h2>
+          <button class="modal-close" onclick="closeModal('modalWorkoutSummary')">&times;</button>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="summary-label">Vzdálenost</div>
+            <div class="summary-val" id="sumDistance">0 m</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Čas</div>
+            <div class="summary-val" id="sumTime">00:00.0</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Průměrné tempo</div>
+            <div class="summary-val" id="sumPace">--:--.-</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Průměrný výkon</div>
+            <div class="summary-val" id="sumWatts">0 W</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Průměrné SPM</div>
+            <div class="summary-val" id="sumSpm">0</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">Kalorie / Tep</div>
+            <div class="summary-val" id="sumCalHr">0 cal / --</div>
+          </div>
+        </div>
+
+        <div id="uploadStatusBox"
+          style="margin: 14px 0; font-size: 0.85rem; padding: 10px; border-radius: 8px; display: none;"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 18px;">
+          <button id="btnUploadLogbook" class="btn-primary" style="width: 100%; justify-content: center;">
+            🚀 Odeslat do Concept2 Logbooku
+          </button>
+          <button id="btnDownloadCsv" class="btn-outline" style="width: 100%; justify-content: center;">
+            💾 Stáhnout CSV zálohu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === MODAL OVLÁDÁNÍ ===
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // === CONCEPT2 LOGBOOK INTEGRACE ===
+    // =========================================================================
+    // Zde můžete vložit svůj Concept2 Personal Access Token napevno:
+    // Např.: const HARDCODED_C2_TOKEN = '2|abc123xyz...';
+    // =========================================================================
+    const HARDCODED_C2_TOKEN = '';
+
+    let c2Token = localStorage.getItem('c2_token') || (HARDCODED_C2_TOKEN ? HARDCODED_C2_TOKEN.trim() : '');
+    let c2UserData = JSON.parse(localStorage.getItem('c2_user') || 'null');
+
+    const btnLogbook = document.getElementById('btnLogbook');
+    const logbookBtnText = document.getElementById('logbookBtnText');
+    const inputC2Token = document.getElementById('inputC2Token');
+    const btnVerifyToken = document.getElementById('btnVerifyToken');
+    const logbookStatusMsg = document.getElementById('logbookStatusMsg');
+
+    // Workout relace
+    const btnStartWorkout = document.getElementById('btnStartWorkout');
+    const btnFinishWorkout = document.getElementById('btnFinishWorkout');
+    const recIndicator = document.getElementById('recIndicator');
+    const workoutStatusText = document.getElementById('workoutStatusText');
+
+    const btnUploadLogbook = document.getElementById('btnUploadLogbook');
+    const btnDownloadCsv = document.getElementById('btnDownloadCsv');
+    const uploadStatusBox = document.getElementById('uploadStatusBox');
+
+    // Inicializace stavu Logbooku
+    if (c2Token) {
+      inputC2Token.value = c2Token;
+      updateLogbookBadge(true, c2UserData ? (c2UserData.first_name || c2UserData.username) : '');
+      if (!c2UserData) {
+        verifyToken(c2Token, true);
+      }
+    } else {
+      // Zkusíme načíst token ze server.js (pokud byl nastaven v server.js)
+      fetch('/api/logbook/config')
+        .then(r => r.json())
+        .then(cfg => {
+          if (cfg.token) {
+            c2Token = cfg.token;
+            inputC2Token.value = c2Token;
+            verifyToken(c2Token, true);
+          }
+        })
+        .catch(() => { });
+    }
+
+    btnLogbook.addEventListener('click', () => {
+      openModal('modalLogbook');
+    });
+
+    function updateLogbookBadge(isConnected, name) {
+      if (isConnected) {
+        logbookBtnText.textContent = name ? `Logbook: ${name}` : 'Logbook: Připojeno';
+        btnLogbook.style.borderColor = 'var(--success)';
+        btnLogbook.style.color = '#86efac';
+      } else {
+        logbookBtnText.textContent = 'Logbook';
+        btnLogbook.style.borderColor = 'var(--card-border)';
+        btnLogbook.style.color = 'var(--text-main)';
+      }
+    }
+
+    async function verifyToken(token, silent = false) {
+      if (!token) {
+        if (!silent) showLogbookStatus('Zadejte prosím token.', 'error');
+        return false;
+      }
+
+      if (!silent) {
+        btnVerifyToken.disabled = true;
+        btnVerifyToken.textContent = 'Ověřuji...';
+      }
+
+      try {
+        const res = await fetch('/api/logbook/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.data) {
+          c2Token = token;
+          c2UserData = data.data;
+          localStorage.setItem('c2_token', c2Token);
+          localStorage.setItem('c2_user', JSON.stringify(c2UserData));
+
+          const displayName = c2UserData.first_name
+            ? `${c2UserData.first_name} ${c2UserData.last_name || ''}`
+            : (c2UserData.username || 'Uživatel');
+
+          if (!silent) showLogbookStatus(`Úspěšně propojeno! Účet: ${displayName}`, 'success');
+          updateLogbookBadge(true, c2UserData.first_name || c2UserData.username);
+          return true;
+        } else {
+          if (!silent) showLogbookStatus(`Chyba ověření: ${data.message || 'Neplatný token'}`, 'error');
+          return false;
+        }
+      } catch (err) {
+        if (!silent) showLogbookStatus(`Chyba připojení k serveru: ${err.message}`, 'error');
+        return false;
+      } finally {
+        if (!silent) {
+          btnVerifyToken.disabled = false;
+          btnVerifyToken.textContent = 'Ověřit & Uložit';
+        }
+      }
+    }
+
+    btnVerifyToken.addEventListener('click', () => {
+      const token = inputC2Token.value.trim();
+      verifyToken(token, false);
+    });
+
+    function showLogbookStatus(msg, type) {
+      logbookStatusMsg.style.display = 'block';
+      logbookStatusMsg.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
+      logbookStatusMsg.textContent = msg;
+    }
+
+    // === ZÁZNAM TRÉNINKU (WORKOUT TRACKER) ===
+    let isRecording = false;
+    let workoutSession = {
+      startTime: null,
+      samples: [],
+      startDistance: 0,
+      startDuration: 0,
+      lastCalculated: null
+    };
+
+    // Globální stav aktuální telemetrie
+    const currentTelemetry = {
+      distance: 0,
+      elapsedTime: 0,
+      pace: 0,
+      watts: 0,
+      spm: 0,
+      heartRate: 0
+    };
+
+    function startWorkout() {
+      if (isRecording) return;
+      isRecording = true;
+      workoutSession = {
+        startTime: new Date(),
+        samples: [],
+        startDistance: currentTelemetry.distance || 0,
+        startDuration: currentTelemetry.elapsedTime || 0,
+        lastCalculated: null
+      };
+
+      recIndicator.classList.add('recording');
+      btnStartWorkout.disabled = true;
+      btnFinishWorkout.disabled = false;
+      workoutStatusText.textContent = '🔴 Nahrávám trénink... Veslujte!';
+    }
+
+    function recordSample(data) {
+      if (!isRecording) return;
+
+      workoutSession.samples.push({
+        t: Date.now(),
+        distance: data.distance !== undefined ? data.distance : currentTelemetry.distance,
+        elapsedTime: data.elapsedTime !== undefined ? data.elapsedTime : currentTelemetry.elapsedTime,
+        pace: data.pace !== undefined ? data.pace : currentTelemetry.pace,
+        watts: data.watts !== undefined ? data.watts : currentTelemetry.watts,
+        spm: data.spm !== undefined ? data.spm : currentTelemetry.spm,
+        heartRate: data.heartRate !== undefined ? data.heartRate : currentTelemetry.heartRate
+      });
+
+      const currentDist = (currentTelemetry.distance || 0) - workoutSession.startDistance;
+      const currentElapsed = (currentTelemetry.elapsedTime || 0) - workoutSession.startDuration;
+      workoutStatusText.textContent = `🔴 Nahrávám: ${Math.max(0, currentDist).toFixed(0)} m | ${formatTime(currentElapsed)}`;
+    }
+
+    function finishWorkout() {
+      if (!isRecording && (!workoutSession.lastCalculated && workoutSession.samples.length === 0)) {
+        alert('Nejprve spusťte trénink a udělejte několik záběrů.');
+        return;
+      }
+
+      isRecording = false;
+      recIndicator.classList.remove('recording');
+      btnStartWorkout.disabled = false;
+      btnFinishWorkout.disabled = true;
+      workoutStatusText.textContent = 'Trénink dokončen. Otevřeno shrnutí.';
+
+      // Výpočet souhrnných metrik
+      const samples = workoutSession.samples;
+      let totalDist = 0;
+      let totalTime = 0;
+      let avgWatts = 0;
+      let avgSpm = 0;
+      let avgPace = 0;
+      let avgHr = 0;
+      let hrCount = 0;
+
+      if (samples.length > 0) {
+        const first = samples[0];
+        const last = samples[samples.length - 1];
+        totalDist = Math.max(0, last.distance - workoutSession.startDistance);
+        totalTime = Math.max(0, last.elapsedTime - workoutSession.startDuration);
+
+        let wattsSum = 0;
+        let spmSum = 0;
+        let paceSum = 0;
+        let hrSum = 0;
+        let activeCount = 0;
+
+        for (const s of samples) {
+          if (s.pace > 0) {
+            paceSum += s.pace;
+            wattsSum += (s.watts || calculateWattsFromPace(s.pace));
+            spmSum += (s.spm || 0);
+            activeCount++;
+          }
+          if (s.heartRate > 0 && s.heartRate < 255) {
+            hrSum += s.heartRate;
+            hrCount++;
+          }
+        }
+
+        if (activeCount > 0) {
+          avgWatts = Math.round(wattsSum / activeCount);
+          avgSpm = Math.round(spmSum / activeCount);
+          avgPace = paceSum / activeCount;
+        }
+        if (hrCount > 0) {
+          avgHr = Math.round(hrSum / hrCount);
+        }
+      }
+
+      // Odhad kalorií
+      const calories = Math.round((avgWatts * 4 * (totalTime / 3600)) + 300 * (totalTime / 3600));
+
+      const summary = {
+        date: workoutSession.startTime || new Date(),
+        distance: Math.round(totalDist),
+        durationSec: totalTime,
+        avgPaceSec: avgPace,
+        avgWatts: avgWatts,
+        avgSpm: avgSpm,
+        avgHeartRate: avgHr,
+        calories: calories,
+        samples: samples
+      };
+
+      workoutSession.lastCalculated = summary;
+
+      // Uložení do historie v prohlížeči (LocalStorage)
+      try {
+        const history = JSON.parse(localStorage.getItem('c2_workout_history') || '[]');
+        history.unshift({
+          date: summary.date.toISOString(),
+          distance: summary.distance,
+          durationSec: summary.durationSec,
+          avgPace: formatPace(summary.avgPaceSec),
+          avgWatts: summary.avgWatts
+        });
+        localStorage.setItem('c2_workout_history', JSON.stringify(history.slice(0, 30)));
+      } catch (e) {
+        console.warn('Nelze uložit historii do LocalStorage:', e);
+      }
+
+      // Zobrazení v modalu
+      document.getElementById('sumDistance').textContent = `${summary.distance} m`;
+      document.getElementById('sumTime').textContent = formatTime(summary.durationSec);
+      document.getElementById('sumPace').textContent = formatPace(summary.avgPaceSec);
+      document.getElementById('sumWatts').textContent = `${summary.avgWatts} W`;
+      document.getElementById('sumSpm').textContent = summary.avgSpm;
+      document.getElementById('sumCalHr').textContent = `${summary.calories} cal / ${avgHr > 0 ? avgHr + ' bpm' : '--'}`;
+
+      uploadStatusBox.style.display = 'none';
+      btnUploadLogbook.disabled = false;
+      btnUploadLogbook.textContent = '🚀 Odeslat do Concept2 Logbooku';
+      openModal('modalWorkoutSummary');
+    }
+
+    // Odeslání do Concept2 Logbooku
+    btnUploadLogbook.addEventListener('click', async () => {
+      if (!c2Token) {
+        alert('Nejprve vložte svůj Personal Access Token v sekci Logbook.');
+        closeModal('modalWorkoutSummary');
+        openModal('modalLogbook');
+        return;
+      }
+
+      const sum = workoutSession.lastCalculated;
+      if (!sum || sum.distance <= 0) {
+        alert('Trénink neobsahuje žádnou ujetou vzdálenost.');
+        return;
+      }
+
+      btnUploadLogbook.disabled = true;
+      btnUploadLogbook.textContent = 'Odesílám do Concept2...';
+      uploadStatusBox.style.display = 'block';
+      uploadStatusBox.style.background = '#1e293b';
+      uploadStatusBox.style.color = '#cbd5e1';
+      uploadStatusBox.textContent = 'Odesílám data tréninku do vašeho online deníku...';
+
+      // Concept2 payload
+      // Čas je v desetinách vteřiny: time = Math.round(seconds * 10)
+      const payload = {
+        type: 'rower',
+        date: sum.date.toISOString().replace(/\.\d{3}Z$/, 'Z'),
+        time: Math.max(10, Math.round(sum.durationSec * 10)),
+        distance: Math.max(1, sum.distance),
+        stroke_rate: sum.avgSpm || undefined,
+        heart_rate: sum.avgHeartRate > 0 ? sum.avgHeartRate : undefined,
+        weight_class: 'H',
+        comments: 'Zaznamenáno z RowingGame'
+      };
+
+      try {
+        const res = await fetch('/api/logbook/results', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: c2Token, payload })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.data) {
+          uploadStatusBox.style.background = 'rgba(21, 128, 61, 0.2)';
+          uploadStatusBox.style.color = '#86efac';
+          uploadStatusBox.innerHTML = `✅ <strong>Trénink byl úspěšně uložen do Concept2 Logbooku!</strong><br><a href="https://log.concept2.com/history" target="_blank" style="color: #60a5fa; text-decoration: underline;">Zobrazit v deníku log.concept2.com ➔</a>`;
+          btnUploadLogbook.textContent = 'Odesláno ✓';
+        } else {
+          uploadStatusBox.style.background = 'rgba(127, 29, 29, 0.3)';
+          uploadStatusBox.style.color = '#fca5a5';
+          uploadStatusBox.textContent = `Chyba odeslání: ${data.message || JSON.stringify(data)}`;
+          btnUploadLogbook.disabled = false;
+          btnUploadLogbook.textContent = 'Zkusit odeslat znovu';
+        }
+      } catch (err) {
+        uploadStatusBox.style.background = 'rgba(127, 29, 29, 0.3)';
+        uploadStatusBox.style.color = '#fca5a5';
+        uploadStatusBox.textContent = `Chyba spojení: ${err.message}`;
+        btnUploadLogbook.disabled = false;
+        btnUploadLogbook.textContent = 'Zkusit odeslat znovu';
+      }
+    });
+
+    // Stažení záložního CSV
+    btnDownloadCsv.addEventListener('click', () => {
+      const sum = workoutSession.lastCalculated;
+      if (!sum || !sum.samples || sum.samples.length === 0) {
+        alert('Žádná data ke stažení.');
+        return;
+      }
+
+      let csv = 'Timestamp,Elapsed_Sec,Distance_M,Pace_Sec_500m,Watts,SPM,HeartRate\n';
+      for (const s of sum.samples) {
+        csv += `${new Date(s.t).toISOString()},${s.elapsedTime.toFixed(1)},${s.distance.toFixed(1)},${s.pace.toFixed(1)},${Math.round(s.watts)},${s.spm},${s.heartRate}\n`;
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `concept2-workout-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    btnStartWorkout.addEventListener('click', startWorkout);
+    btnFinishWorkout.addEventListener('click', finishWorkout);
+
+    // Concept2 PM5 BLE UUIDs (Oficiální specifikace Concept2)
+    const PM5_DISCOVERY_SERVICE = 'ce060000-43e5-11e4-916c-0800200c9a66';
+    const PM5_ROWING_SERVICE = 'ce060030-43e5-11e4-916c-0800200c9a66';
+
+    // Characteristics:
+    const PM5_CHAR_GENERAL_STATUS = 'ce060031-43e5-11e4-916c-0800200c9a66';
+    const PM5_CHAR_ADDITIONAL_STATUS_1 = 'ce060032-43e5-11e4-916c-0800200c9a66';
+    const PM5_CHAR_ADDITIONAL_STATUS_2 = 'ce060033-43e5-11e4-916c-0800200c9a66';
+
+    // UI Elements
+    const btnConnect = document.getElementById('btnConnect');
+    const btnConnectAll = document.getElementById('btnConnectAll');
+    const btnDisconnect = document.getElementById('btnDisconnect');
+    const btnSimulate = document.getElementById('btnSimulate');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+
+    const valPace = document.getElementById('valPace');
+    const valWatts = document.getElementById('valWatts');
+    const valCalories = document.getElementById('valCalories');
+    const valSpm = document.getElementById('valSpm');
+    const valStrokeState = document.getElementById('valStrokeState');
+    const valDistance = document.getElementById('valDistance');
+    const valTime = document.getElementById('valTime');
+    const valHeartRate = document.getElementById('valHeartRate');
+    const boat = document.getElementById('boat');
+    const trackProgress = document.getElementById('trackProgress');
+
+    let bleDevice = null;
+    let isSimulating = false;
+    let simInterval = null;
+
+    // Pomocná funkce pro převod vteřin tempa (např. 120.5) na text "2:00.5"
+    function formatPace(paceSec) {
+      if (!paceSec || paceSec <= 0 || paceSec > 600) return '--:--.-';
+      const minutes = Math.floor(paceSec / 60);
+      const seconds = Math.floor(paceSec % 60);
+      const tenths = Math.floor((paceSec % 1) * 10);
+      return `${minutes}:${seconds.toString().padStart(2, '0')}.${tenths}`;
+    }
+
+    // Pomocná funkce pro převod celkového času na "MM:SS.t"
+    function formatTime(totalSec) {
+      if (!totalSec || totalSec <= 0) return '00:00.0';
+      const minutes = Math.floor(totalSec / 60);
+      const seconds = Math.floor(totalSec % 60);
+      const tenths = Math.floor((totalSec % 1) * 10);
+      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${tenths}`;
+    }
+
+    // Výpočet wattů z tempa podle oficiálního vzorce Concept2:
+    // Watts = 2.8 / (pace_in_seconds / 500)^3
+    function calculateWattsFromPace(paceSec) {
+      if (!paceSec || paceSec <= 0) return 0;
+      const paceRatio = paceSec / 500;
+      return Math.round(2.8 / Math.pow(paceRatio, 3));
+    }
+
+    // Názvy fází záběru podle PM5 specifikace
+    const STROKE_STATES = {
+      0: 'Čekání',
+      1: 'Záběr (Catch)',
+      2: 'Záběr (Drive)',
+      3: 'Dotažení',
+      4: 'Návrat (Recovery)'
+    };
+
+    // Aktualizace UI
+    function updateDashboard(data) {
+      if (data.pace !== undefined) currentTelemetry.pace = data.pace;
+      if (data.watts !== undefined) currentTelemetry.watts = data.watts;
+      if (data.calories !== undefined) currentTelemetry.calories = data.calories;
+      if (data.spm !== undefined) currentTelemetry.spm = data.spm;
+      if (data.distance !== undefined) currentTelemetry.distance = data.distance;
+      if (data.elapsedTime !== undefined) currentTelemetry.elapsedTime = data.elapsedTime;
+      if (data.heartRate !== undefined) currentTelemetry.heartRate = data.heartRate;
+
+      // Automatické spuštění záznamu při prvním pohybu / záběru
+      if (!isRecording && data.elapsedTime > 0.5 && (data.distance > 0 || (data.pace > 0 && data.pace < 360))) {
+        startWorkout();
+      }
+
+      // Pokud nahráváme, uložíme vzorek
+      if (isRecording) {
+        recordSample(data);
+      }
+
+      if (data.pace !== undefined) {
+        valPace.textContent = formatPace(data.pace);
+
+        // Pokud nemáme přímo watty z charakteristiky, spočítáme je z tempa
+        if (data.watts === undefined && data.pace > 0) {
+          const w = calculateWattsFromPace(data.pace);
+          currentTelemetry.watts = w;
+          valWatts.innerHTML = `${w} <span style="font-size: 1.1rem; color: var(--text-muted);">W</span>`;
+        }
+      }
+
+      if (data.watts !== undefined) {
+        valWatts.innerHTML = `${Math.round(data.watts)} <span style="font-size: 1.1rem; color: var(--text-muted);">W</span>`;
+      }
+
+      if (data.calories !== undefined) {
+        valCalories.textContent = `${Math.round(data.calories)} Cal/hod`;
+      }
+
+      if (data.spm !== undefined) {
+        valSpm.innerHTML = `${data.spm} <span style="font-size: 1.1rem; color: var(--text-muted);">SPM</span>`;
+      }
+
+      if (data.strokeState !== undefined) {
+        valStrokeState.textContent = STROKE_STATES[data.strokeState] || 'Neznámý';
+      }
+
+      if (data.distance !== undefined) {
+        valDistance.innerHTML = `${data.distance.toFixed(1)} <span style="font-size: 1.1rem; color: var(--text-muted);">m</span>`;
+
+        // Posun loďky v mini-náhledu (cílová vzdálenost např. 500 m)
+        const targetDist = 500;
+        const pct = Math.min(100, (data.distance / targetDist) * 100);
+        trackProgress.textContent = `${pct.toFixed(0)} % (z ${targetDist} m)`;
+
+        // Posun lodičky mezi 10px a 90% šířky dráhy
+        const maxOffset = 90;
+        const currentPos = (pct / 100) * maxOffset;
+        boat.style.left = `calc(${currentPos}% + 10px)`;
+      }
+
+      if (data.elapsedTime !== undefined) {
+        valTime.textContent = formatTime(data.elapsedTime);
+      }
+
+      if (data.heartRate !== undefined) {
+        valHeartRate.textContent = data.heartRate > 0 && data.heartRate < 255
+          ? `${data.heartRate} bpm`
+          : '-- bpm';
+      }
+    }
+
+    // === PŘIPOJENÍ PŘES WEB BLUETOOTH ===
+    async function connectPM5(acceptAll = false) {
+      if (!navigator.bluetooth) {
+        alert('Váš prohlížeč nepodporuje Web Bluetooth API. Prosím použijte Google Chrome nebo Microsoft Edge na PC/Mac/Androidu.');
+        return;
+      }
+
+      try {
+        setConnectionStatus('connecting', acceptAll ? 'Vyhledávám všechna Bluetooth zařízení...' : 'Hledám monitor PM5 v dosahu...');
+
+        const requestOptions = acceptAll
+          ? {
+            acceptAllDevices: true,
+            optionalServices: [PM5_DISCOVERY_SERVICE, PM5_ROWING_SERVICE]
+          }
+          : {
+            filters: [
+              { namePrefix: 'PM5' },
+              { services: [PM5_ROWING_SERVICE] },
+              { services: [PM5_DISCOVERY_SERVICE] }
+            ],
+            optionalServices: [PM5_DISCOVERY_SERVICE, PM5_ROWING_SERVICE]
+          };
+
+        bleDevice = await navigator.bluetooth.requestDevice(requestOptions);
+
+        bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+
+        setConnectionStatus('connecting', `Nalezen ${bleDevice.name || 'PM5'}, navazuji spojení...`);
+        const server = await bleDevice.gatt.connect();
+
+        setConnectionStatus('connecting', `Načítám služby Concept2 z ${bleDevice.name}...`);
+        const service = await server.getPrimaryService(PM5_ROWING_SERVICE);
+
+        // 1. General Status (Čas, vzdálenost, stav záběru)
+        try {
+          const charGeneral = await service.getCharacteristic(PM5_CHAR_GENERAL_STATUS);
+          await charGeneral.startNotifications();
+          charGeneral.addEventListener('characteristicvaluechanged', handleGeneralStatus);
+        } catch (e) {
+          console.warn('Nelze odebírat General Status:', e);
+        }
+
+        // 2. Additional Status 1 (Tempo /500m, frekvence SPM, tep, rychlost)
+        try {
+          const charAdd1 = await service.getCharacteristic(PM5_CHAR_ADDITIONAL_STATUS_1);
+          await charAdd1.startNotifications();
+          charAdd1.addEventListener('characteristicvaluechanged', handleAdditionalStatus1);
+        } catch (e) {
+          console.warn('Nelze odebírat Additional Status 1:', e);
+        }
+
+        // 3. Additional Status 2 (Watty, kalorie)
+        try {
+          const charAdd2 = await service.getCharacteristic(PM5_CHAR_ADDITIONAL_STATUS_2);
+          await charAdd2.startNotifications();
+          charAdd2.addEventListener('characteristicvaluechanged', handleAdditionalStatus2);
+        } catch (e) {
+          console.warn('Additional Status 2 není aktivní:', e);
+        }
+
+        setConnectionStatus('connected', `Připojeno k: ${bleDevice.name || 'Concept2 PM5'}`);
+        btnConnect.style.display = 'none';
+        btnConnectAll.style.display = 'none';
+        btnDisconnect.style.display = 'inline-flex';
+        btnSimulate.disabled = true;
+
+      } catch (error) {
+        console.error('Chyba při připojování k PM5:', error);
+        if (error.name === 'NotFoundError') {
+          setConnectionStatus('disconnected', 'Párování zrušeno nebo PM5 nebyl vybrán.');
+        } else {
+          setConnectionStatus('disconnected', `Chyba připojení: ${error.message}`);
+        }
+      }
+    }
+
+    // === PARSOVÁNÍ DAT Z PM5 CHARAKTERISTIK ===
+
+    // 0x0031: General Status
+    function handleGeneralStatus(event) {
+      const data = event.target.value;
+      // Elapsed Time: 3 bajty, 0.01 sec rozlišení
+      const elapsed100ths = data.getUint8(0) | (data.getUint8(1) << 8) | (data.getUint8(2) << 16);
+      const elapsedTime = elapsed100ths * 0.01;
+
+      // Distance: 3 bajty, 0.1 m rozlišení
+      const distance10ths = data.getUint8(3) | (data.getUint8(4) << 8) | (data.getUint8(5) << 16);
+      const distance = distance10ths * 0.1;
+
+      // Stroke State: bajt 10
+      const strokeState = data.byteLength > 10 ? data.getUint8(10) : 0;
+
+      updateDashboard({ elapsedTime, distance, strokeState });
+    }
+
+    // 0x0032: Additional Status 1
+    function handleAdditionalStatus1(event) {
+      const data = event.target.value;
+      // Stroke Rate (SPM): bajt 5
+      const spm = data.getUint8(5);
+
+      // Heart Rate: bajt 6 (255 = žádný tepák)
+      const heartRate = data.getUint8(6);
+
+      // Current Pace: bajty 7-8, uint16 little-endian, v setinách vteřiny na 500m
+      const currentPaceRaw = data.getUint16(7, true);
+      const pace = currentPaceRaw > 0 ? (currentPaceRaw * 0.01) : 0;
+
+      updateDashboard({ spm, heartRate, pace });
+    }
+
+    // 0x0033: Additional Status 2
+    function handleAdditionalStatus2(event) {
+      const data = event.target.value;
+      if (data.byteLength >= 6) {
+        // Watty: bajty 4-5
+        const watts = data.getUint16(4, true);
+        // Kalorie: bajty 6-7
+        const calories = data.byteLength >= 8 ? data.getUint16(6, true) : undefined;
+        updateDashboard({ watts, calories });
+      }
+    }
+
+    function onDisconnected() {
+      setConnectionStatus('disconnected', 'PM5 byl odpojen.');
+      btnConnect.style.display = 'inline-flex';
+      btnConnectAll.style.display = 'inline-flex';
+      btnDisconnect.style.display = 'none';
+      btnSimulate.disabled = false;
+    }
+
+    function disconnectPM5() {
+      if (bleDevice && bleDevice.gatt.connected) {
+        bleDevice.gatt.disconnect();
+      }
+    }
+
+    function setConnectionStatus(state, msg) {
+      statusDot.className = `status-dot ${state}`;
+      statusText.textContent = msg;
+    }
+
+    // === REŽIM DEMO SIMULACE (pro testování bez trenažéru) ===
+    function toggleSimulation() {
+      if (isSimulating) {
+        clearInterval(simInterval);
+        isSimulating = false;
+        btnSimulate.textContent = 'Demo simulace';
+        btnConnect.disabled = false;
+        setConnectionStatus('disconnected', 'Simulace ukončena.');
+      } else {
+        isSimulating = true;
+        btnSimulate.textContent = 'Zastavit simulaci';
+        btnConnect.disabled = true;
+        setConnectionStatus('connected', 'Běží demo simulace (syntetická data veslování)...');
+
+        let dist = 0;
+        let time = 0;
+        let strokePhase = 1;
+
+        simInterval = setInterval(() => {
+          time += 0.5;
+          dist += 3.8; // cca rychlost 2:00 / 500m
+          strokePhase = (strokePhase % 4) + 1;
+
+          updateDashboard({
+            pace: 121.5 + (Math.sin(time) * 3), // tempo kolísá kolem 2:01.5
+            watts: 195 + Math.round(Math.sin(time) * 20),
+            calories: 840,
+            spm: 26,
+            strokeState: strokePhase,
+            distance: dist,
+            elapsedTime: time,
+            heartRate: 145 + Math.round(Math.sin(time * 0.1) * 5)
+          });
+        }, 500);
+      }
+    }
+
+    // Listeners
+    btnConnect.addEventListener('click', () => connectPM5(false));
+    btnConnectAll.addEventListener('click', () => connectPM5(true));
+    btnDisconnect.addEventListener('click', disconnectPM5);
+    btnSimulate.addEventListener('click', toggleSimulation);
+  </script>
+</body>
+
+</html>
