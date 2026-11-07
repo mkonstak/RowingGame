@@ -509,18 +509,8 @@
           </svg>
           Připojit PM5
         </button>
-        <button id="btnConnectAll" class="btn-secondary" title="Zobrazí všechna BT zařízení v okolí">
-          Hledat vše
-        </button>
         <button id="btnSimulate" class="btn-secondary">
           Demo
-        </button>
-        <button id="btnLogbook" class="btn-outline">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-          </svg>
-          <span id="logbookBtnText">Logbook</span>
         </button>
         <button id="btnDisconnect" class="btn-danger" style="display: none;">
           Odpojit
@@ -545,7 +535,7 @@
           ▶ Začít trénink
         </button>
         <button id="btnFinishWorkout" class="btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;" disabled>
-          ⏹ Ukončit & Odeslat
+          ⏹ Ukončit trénink
         </button>
       </div>
     </div>
@@ -608,48 +598,7 @@
       Pokud je k PM5 zrovna připojen mobil s <strong>ErgData</strong>, PM5 nepovolí další Bluetooth spojení. V takovém
       případě v ErgData odpojte trenažér nebo vypněte Bluetooth na telefonu.
     </div>
-    <!-- MODAL: Nastavení Concept2 Logbook -->
-    <div id="modalLogbook" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <h2>Concept2 Online Logbook</h2>
-          <button class="modal-close" onclick="closeModal('modalLogbook')">&times;</button>
-        </div>
-
-        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
-          Pro přímé odesílání tréninků bez nutnosti mít spuštěná ErgData potřebujete svůj <strong>Personal Access
-            Token</strong> z webu Concept2.
-        </div>
-
-        <div class="info-callout" style="margin-bottom: 16px; font-size: 0.8rem;">
-          <strong>Jak získat token:</strong><br>
-          1. Přihlaste se na <a href="https://log.concept2.com/profile/edit" target="_blank"
-            style="color: var(--accent);">log.concept2.com/profile/edit</a>.<br>
-          2. Klikněte na záložku <strong>Applications</strong>.<br>
-          3. V sekci <em>Personal Access Tokens</em> klikněte na <strong>Create New Token</strong>.<br>
-          4. Zkopírujte vygenerovaný token a vložte jej níže.
-        </div>
-
-        <div class="form-group">
-          <label for="inputC2Token">Váš Personal Access Token</label>
-          <input type="password" id="inputC2Token" class="form-input"
-            placeholder="Vložte sem token (např. 2|abc123xyz...)">
-        </div>
-
-        <div id="logbookStatusMsg" style="margin-bottom: 16px; font-size: 0.85rem; display: none;"></div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
-          <button id="btnVerifyToken" class="btn-primary" style="padding: 8px 16px;">
-            Ověřit & Uložit
-          </button>
-          <button class="btn-outline" onclick="closeModal('modalLogbook')" style="padding: 8px 16px;">
-            Zavřít
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL: Shrnutí tréninku & Odeslání -->
+    <!-- MODAL: Shrnutí tréninku -->
     <div id="modalWorkoutSummary" class="modal-overlay">
       <div class="modal-box">
         <div class="modal-header">
@@ -684,15 +633,12 @@
           </div>
         </div>
 
-        <div id="uploadStatusBox"
-          style="margin: 14px 0; font-size: 0.85rem; padding: 10px; border-radius: 8px; display: none;"></div>
-
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 18px;">
-          <button id="btnUploadLogbook" class="btn-primary" style="width: 100%; justify-content: center;">
-            🚀 Odeslat do Concept2 Logbooku
+          <button id="btnDownloadCsv" class="btn-primary" style="width: 100%; justify-content: center;">
+            💾 Stáhnout CSV záznam
           </button>
-          <button id="btnDownloadCsv" class="btn-outline" style="width: 100%; justify-content: center;">
-            💾 Stáhnout CSV zálohu
+          <button class="btn-outline" onclick="closeModal('modalWorkoutSummary')" style="width: 100%; justify-content: center;">
+            Zavřít
           </button>
         </div>
       </div>
@@ -708,126 +654,12 @@
       document.getElementById(id).classList.remove('active');
     }
 
-    // === CONCEPT2 LOGBOOK INTEGRACE ===
-    // =========================================================================
-    // Zde můžete vložit svůj Concept2 Personal Access Token napevno:
-    // Např.: const HARDCODED_C2_TOKEN = '2|abc123xyz...';
-    // =========================================================================
-    const HARDCODED_C2_TOKEN = '';
-
-    let c2Token = localStorage.getItem('c2_token') || (HARDCODED_C2_TOKEN ? HARDCODED_C2_TOKEN.trim() : '');
-    let c2UserData = JSON.parse(localStorage.getItem('c2_user') || 'null');
-
-    const btnLogbook = document.getElementById('btnLogbook');
-    const logbookBtnText = document.getElementById('logbookBtnText');
-    const inputC2Token = document.getElementById('inputC2Token');
-    const btnVerifyToken = document.getElementById('btnVerifyToken');
-    const logbookStatusMsg = document.getElementById('logbookStatusMsg');
-
     // Workout relace
     const btnStartWorkout = document.getElementById('btnStartWorkout');
     const btnFinishWorkout = document.getElementById('btnFinishWorkout');
     const recIndicator = document.getElementById('recIndicator');
     const workoutStatusText = document.getElementById('workoutStatusText');
-
-    const btnUploadLogbook = document.getElementById('btnUploadLogbook');
     const btnDownloadCsv = document.getElementById('btnDownloadCsv');
-    const uploadStatusBox = document.getElementById('uploadStatusBox');
-
-    // Inicializace stavu Logbooku
-    if (c2Token) {
-      inputC2Token.value = c2Token;
-      updateLogbookBadge(true, c2UserData ? (c2UserData.first_name || c2UserData.username) : '');
-      if (!c2UserData) {
-        verifyToken(c2Token, true);
-      }
-    } else {
-      // Zkusíme načíst token ze server.js (pokud byl nastaven v server.js)
-      fetch('/api/logbook/config')
-        .then(r => r.json())
-        .then(cfg => {
-          if (cfg.token) {
-            c2Token = cfg.token;
-            inputC2Token.value = c2Token;
-            verifyToken(c2Token, true);
-          }
-        })
-        .catch(() => { });
-    }
-
-    btnLogbook.addEventListener('click', () => {
-      openModal('modalLogbook');
-    });
-
-    function updateLogbookBadge(isConnected, name) {
-      if (isConnected) {
-        logbookBtnText.textContent = name ? `Logbook: ${name}` : 'Logbook: Připojeno';
-        btnLogbook.style.borderColor = 'var(--success)';
-        btnLogbook.style.color = '#86efac';
-      } else {
-        logbookBtnText.textContent = 'Logbook';
-        btnLogbook.style.borderColor = 'var(--card-border)';
-        btnLogbook.style.color = 'var(--text-main)';
-      }
-    }
-
-    async function verifyToken(token, silent = false) {
-      if (!token) {
-        if (!silent) showLogbookStatus('Zadejte prosím token.', 'error');
-        return false;
-      }
-
-      if (!silent) {
-        btnVerifyToken.disabled = true;
-        btnVerifyToken.textContent = 'Ověřuji...';
-      }
-
-      try {
-        const res = await fetch('/api/logbook/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token })
-        });
-
-        const data = await res.json();
-        if (res.ok && data.data) {
-          c2Token = token;
-          c2UserData = data.data;
-          localStorage.setItem('c2_token', c2Token);
-          localStorage.setItem('c2_user', JSON.stringify(c2UserData));
-
-          const displayName = c2UserData.first_name
-            ? `${c2UserData.first_name} ${c2UserData.last_name || ''}`
-            : (c2UserData.username || 'Uživatel');
-
-          if (!silent) showLogbookStatus(`Úspěšně propojeno! Účet: ${displayName}`, 'success');
-          updateLogbookBadge(true, c2UserData.first_name || c2UserData.username);
-          return true;
-        } else {
-          if (!silent) showLogbookStatus(`Chyba ověření: ${data.message || 'Neplatný token'}`, 'error');
-          return false;
-        }
-      } catch (err) {
-        if (!silent) showLogbookStatus(`Chyba připojení k serveru: ${err.message}`, 'error');
-        return false;
-      } finally {
-        if (!silent) {
-          btnVerifyToken.disabled = false;
-          btnVerifyToken.textContent = 'Ověřit & Uložit';
-        }
-      }
-    }
-
-    btnVerifyToken.addEventListener('click', () => {
-      const token = inputC2Token.value.trim();
-      verifyToken(token, false);
-    });
-
-    function showLogbookStatus(msg, type) {
-      logbookStatusMsg.style.display = 'block';
-      logbookStatusMsg.style.color = type === 'success' ? 'var(--success)' : 'var(--danger)';
-      logbookStatusMsg.textContent = msg;
-    }
 
     // === ZÁZNAM TRÉNINKU (WORKOUT TRACKER) ===
     let isRecording = false;
@@ -894,7 +726,7 @@
       recIndicator.classList.remove('recording');
       btnStartWorkout.disabled = false;
       btnFinishWorkout.disabled = true;
-      workoutStatusText.textContent = 'Trénink dokončen. Otevřeno shrnutí.';
+      workoutStatusText.textContent = 'Trénink dokončen. Zobrazeno shrnutí.';
 
       // Výpočet souhrnných metrik
       const samples = workoutSession.samples;
@@ -981,75 +813,35 @@
       document.getElementById('sumSpm').textContent = summary.avgSpm;
       document.getElementById('sumCalHr').textContent = `${summary.calories} cal / ${avgHr > 0 ? avgHr + ' bpm' : '--'}`;
 
-      uploadStatusBox.style.display = 'none';
-      btnUploadLogbook.disabled = false;
-      btnUploadLogbook.textContent = '🚀 Odeslat do Concept2 Logbooku';
       openModal('modalWorkoutSummary');
     }
 
-    // Odeslání do Concept2 Logbooku
-    btnUploadLogbook.addEventListener('click', async () => {
-      if (!c2Token) {
-        alert('Nejprve vložte svůj Personal Access Token v sekci Logbook.');
-        closeModal('modalWorkoutSummary');
-        openModal('modalLogbook');
-        return;
-      }
-
+    // Stažení záložního CSV
+    btnDownloadCsv.addEventListener('click', () => {
       const sum = workoutSession.lastCalculated;
-      if (!sum || sum.distance <= 0) {
-        alert('Trénink neobsahuje žádnou ujetou vzdálenost.');
+      if (!sum || !sum.samples || sum.samples.length === 0) {
+        alert('Žádná data ke stažení.');
         return;
       }
 
-      btnUploadLogbook.disabled = true;
-      btnUploadLogbook.textContent = 'Odesílám do Concept2...';
-      uploadStatusBox.style.display = 'block';
-      uploadStatusBox.style.background = '#1e293b';
-      uploadStatusBox.style.color = '#cbd5e1';
-      uploadStatusBox.textContent = 'Odesílám data tréninku do vašeho online deníku...';
-
-      // Concept2 payload
-      // Čas je v desetinách vteřiny: time = Math.round(seconds * 10)
-      const payload = {
-        type: 'rower',
-        date: sum.date.toISOString().replace(/\.\d{3}Z$/, 'Z'),
-        time: Math.max(10, Math.round(sum.durationSec * 10)),
-        distance: Math.max(1, sum.distance),
-        stroke_rate: sum.avgSpm || undefined,
-        heart_rate: sum.avgHeartRate > 0 ? sum.avgHeartRate : undefined,
-        weight_class: 'H',
-        comments: 'Zaznamenáno z RowingGame'
-      };
-
-      try {
-        const res = await fetch('/api/logbook/results', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: c2Token, payload })
-        });
-
-        const data = await res.json();
-        if (res.ok && data.data) {
-          uploadStatusBox.style.background = 'rgba(21, 128, 61, 0.2)';
-          uploadStatusBox.style.color = '#86efac';
-          uploadStatusBox.innerHTML = `✅ <strong>Trénink byl úspěšně uložen do Concept2 Logbooku!</strong><br><a href="https://log.concept2.com/history" target="_blank" style="color: #60a5fa; text-decoration: underline;">Zobrazit v deníku log.concept2.com ➔</a>`;
-          btnUploadLogbook.textContent = 'Odesláno ✓';
-        } else {
-          uploadStatusBox.style.background = 'rgba(127, 29, 29, 0.3)';
-          uploadStatusBox.style.color = '#fca5a5';
-          uploadStatusBox.textContent = `Chyba odeslání: ${data.message || JSON.stringify(data)}`;
-          btnUploadLogbook.disabled = false;
-          btnUploadLogbook.textContent = 'Zkusit odeslat znovu';
-        }
-      } catch (err) {
-        uploadStatusBox.style.background = 'rgba(127, 29, 29, 0.3)';
-        uploadStatusBox.style.color = '#fca5a5';
-        uploadStatusBox.textContent = `Chyba spojení: ${err.message}`;
-        btnUploadLogbook.disabled = false;
-        btnUploadLogbook.textContent = 'Zkusit odeslat znovu';
+      let csv = 'Timestamp,Elapsed_Sec,Distance_M,Pace_Sec_500m,Watts,SPM,HeartRate\n';
+      for (const s of sum.samples) {
+        csv += `${new Date(s.t).toISOString()},${s.elapsedTime.toFixed(1)},${s.distance.toFixed(1)},${s.pace.toFixed(1)},${Math.round(s.watts)},${s.spm},${s.heartRate}\n`;
       }
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `concept2-workout-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     });
+
+    btnStartWorkout.addEventListener('click', startWorkout);
+    btnFinishWorkout.addEventListener('click', finishWorkout);
 
     // Stažení záložního CSV
     btnDownloadCsv.addEventListener('click', () => {
@@ -1089,7 +881,6 @@
 
     // UI Elements
     const btnConnect = document.getElementById('btnConnect');
-    const btnConnectAll = document.getElementById('btnConnectAll');
     const btnDisconnect = document.getElementById('btnDisconnect');
     const btnSimulate = document.getElementById('btnSimulate');
     const statusDot = document.getElementById('statusDot');
@@ -1218,30 +1009,23 @@
     }
 
     // === PŘIPOJENÍ PŘES WEB BLUETOOTH ===
-    async function connectPM5(acceptAll = false) {
+    async function connectPM5() {
       if (!navigator.bluetooth) {
         alert('Váš prohlížeč nepodporuje Web Bluetooth API. Prosím použijte Google Chrome nebo Microsoft Edge na PC/Mac/Androidu.');
         return;
       }
 
       try {
-        setConnectionStatus('connecting', acceptAll ? 'Vyhledávám všechna Bluetooth zařízení...' : 'Hledám monitor PM5 v dosahu...');
+        setConnectionStatus('connecting', 'Hledám monitor PM5 v dosahu...');
 
-        const requestOptions = acceptAll
-          ? {
-            acceptAllDevices: true,
-            optionalServices: [PM5_DISCOVERY_SERVICE, PM5_ROWING_SERVICE]
-          }
-          : {
-            filters: [
-              { namePrefix: 'PM5' },
-              { services: [PM5_ROWING_SERVICE] },
-              { services: [PM5_DISCOVERY_SERVICE] }
-            ],
-            optionalServices: [PM5_DISCOVERY_SERVICE, PM5_ROWING_SERVICE]
-          };
-
-        bleDevice = await navigator.bluetooth.requestDevice(requestOptions);
+        bleDevice = await navigator.bluetooth.requestDevice({
+          filters: [
+            { namePrefix: 'PM5' },
+            { services: [PM5_ROWING_SERVICE] },
+            { services: [PM5_DISCOVERY_SERVICE] }
+          ],
+          optionalServices: [PM5_DISCOVERY_SERVICE, PM5_ROWING_SERVICE]
+        });
 
         bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
 
@@ -1280,14 +1064,13 @@
 
         setConnectionStatus('connected', `Připojeno k: ${bleDevice.name || 'Concept2 PM5'}`);
         btnConnect.style.display = 'none';
-        btnConnectAll.style.display = 'none';
         btnDisconnect.style.display = 'inline-flex';
         btnSimulate.disabled = true;
 
       } catch (error) {
         console.error('Chyba při připojování k PM5:', error);
         if (error.name === 'NotFoundError') {
-          setConnectionStatus('disconnected', 'Párování zrušeno nebo PM5 nebyl vybrán.');
+          setConnectionStatus('disconnected', 'Párování zrušeno.');
         } else {
           setConnectionStatus('disconnected', `Chyba připojení: ${error.message}`);
         }
@@ -1344,7 +1127,6 @@
     function onDisconnected() {
       setConnectionStatus('disconnected', 'PM5 byl odpojen.');
       btnConnect.style.display = 'inline-flex';
-      btnConnectAll.style.display = 'inline-flex';
       btnDisconnect.style.display = 'none';
       btnSimulate.disabled = false;
     }
@@ -1398,8 +1180,7 @@
     }
 
     // Listeners
-    btnConnect.addEventListener('click', () => connectPM5(false));
-    btnConnectAll.addEventListener('click', () => connectPM5(true));
+    btnConnect.addEventListener('click', connectPM5);
     btnDisconnect.addEventListener('click', disconnectPM5);
     btnSimulate.addEventListener('click', toggleSimulation);
   </script>
