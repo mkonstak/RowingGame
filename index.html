@@ -4,21 +4,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RowTerra - Concept2 LISS Colony Builder</title>
+  <title>Concept2 Ghost Regatta & LISS Rowing</title>
   <style>
     :root {
-      --bg: #070a13;
+      --bg: #070b14;
       --card-bg: #0f172a;
       --card-border: #1e293b;
       --accent: #3b82f6;
       --accent-glow: rgba(59, 130, 246, 0.4);
       --c2-orange: #f97316;
+      --c2-glow: rgba(249, 115, 22, 0.4);
+      --ghost-cyan: #06b6d4;
+      --ghost-glow: rgba(6, 182, 212, 0.45);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --success: #22c55e;
       --warning: #eab308;
       --danger: #ef4444;
-      --cyan-glow: #06b6d4;
+      --water-dark: #082f49;
+      --water-light: #0c4a6e;
     }
 
     * {
@@ -35,53 +39,55 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 14px;
+      padding: 16px 12px;
     }
 
     .container {
       width: 100%;
-      max-width: 1060px;
+      max-width: 1100px;
     }
 
+    /* HEADER */
     header {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
-      gap: 14px;
+      margin-bottom: 14px;
+      gap: 12px;
       border-bottom: 1px solid var(--card-border);
-      padding-bottom: 14px;
+      padding-bottom: 12px;
     }
 
-    .logo-area h1 {
-      font-size: 1.6rem;
-      font-weight: 800;
+    .logo-area {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+    }
+
+    .logo-title {
+      font-size: 1.55rem;
+      font-weight: 800;
       letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .logo-badge {
       background: linear-gradient(135deg, #0284c7, #2563eb);
       color: white;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       padding: 3px 8px;
       border-radius: 6px;
       font-weight: 800;
       letter-spacing: 0.05em;
-    }
-
-    .subtitle {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-top: 4px;
+      text-transform: uppercase;
     }
 
     .controls {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -90,13 +96,13 @@
       cursor: pointer;
       border: none;
       border-radius: 8px;
-      padding: 9px 18px;
+      padding: 8px 16px;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .btn-primary {
@@ -108,6 +114,15 @@
       background: #2563eb;
     }
 
+    .btn-ghost-select {
+      background: linear-gradient(135deg, #0891b2, #0284c7);
+      color: white;
+      box-shadow: 0 4px 12px var(--ghost-glow);
+    }
+    .btn-ghost-select:hover {
+      background: linear-gradient(135deg, #0e7490, #0369a1);
+    }
+
     .btn-secondary {
       background: #1e293b;
       color: white;
@@ -115,14 +130,6 @@
     }
     .btn-secondary:hover {
       background: #334155;
-    }
-
-    .btn-success {
-      background: #16a34a;
-      color: white;
-    }
-    .btn-success:hover {
-      background: #15803d;
     }
 
     .btn-danger {
@@ -134,11 +141,11 @@
     }
 
     button:disabled {
-      opacity: 0.5;
+      opacity: 0.45;
       cursor: not-allowed;
     }
 
-    /* Connection Status */
+    /* STATUS BAR */
     .status-bar {
       display: flex;
       align-items: center;
@@ -146,10 +153,10 @@
       gap: 8px;
       font-size: 0.82rem;
       color: var(--text-muted);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 8px;
     }
 
@@ -174,82 +181,83 @@
       animation: pulse 1s infinite alternate;
     }
 
-    /* Mission Settings Bar */
-    .mission-settings {
-      background: linear-gradient(180deg, #131d33, #0f172a);
-      border: 1px solid #1e293b;
+    @keyframes pulse {
+      from { opacity: 0.4; }
+      to { opacity: 1; }
+    }
+
+    /* GHOST INFO BANNER */
+    .ghost-banner {
+      background: linear-gradient(90deg, rgba(8, 145, 178, 0.2), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(6, 182, 212, 0.4);
       border-radius: 12px;
-      padding: 14px 18px;
-      margin-bottom: 16px;
+      padding: 10px 16px;
+      margin-bottom: 14px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
     }
 
-    .settings-group {
+    .ghost-details {
       display: flex;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
     }
 
-    .setting-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .setting-item label {
-      font-weight: 600;
-    }
-
-    .setting-input {
-      background: #090d16;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      color: white;
-      padding: 6px 10px;
-      font-size: 0.9rem;
+    .ghost-tag {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid var(--ghost-cyan);
+      color: #67e8f9;
       font-weight: 700;
-      width: 80px;
-      text-align: center;
-    }
-
-    .preset-btn {
-      background: #1e293b;
-      color: #94a3b8;
-      border: 1px solid #334155;
-      padding: 5px 10px;
+      font-size: 0.75rem;
+      padding: 3px 8px;
       border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-    .preset-btn.active {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    /* === ROWTERRA CANVAS & GAME VIEWPORT === */
-    .game-viewport {
-      background: #04060d;
-      border: 1px solid #1e293b;
+    .ghost-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #ffffff;
+    }
+
+    .ghost-stats {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+    }
+    .ghost-stats span strong {
+      color: #e2e8f0;
+    }
+
+    /* === REGATTA CANVAS VIEWPORT === */
+    .canvas-viewport {
+      background: #020617;
+      border: 1px solid var(--card-border);
       border-radius: 16px;
       overflow: hidden;
       position: relative;
-      margin-bottom: 18px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+      margin-bottom: 16px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
     }
 
-    .game-hud {
+    canvas#regattaCanvas {
+      width: 100%;
+      height: 380px;
+      display: block;
+    }
+
+    /* FLOATING HUD OVER CANVAS */
+    .canvas-hud {
       position: absolute;
-      top: 14px;
-      left: 14px;
-      right: 14px;
+      top: 12px;
+      left: 12px;
+      right: 12px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -257,142 +265,75 @@
       z-index: 10;
     }
 
-    .zone-indicator {
-      display: inline-flex;
+    /* DELTA BADGE */
+    .delta-badge {
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid #334155;
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+      display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 0.88rem;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid #334155;
-      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
       transition: all 0.3s ease;
     }
-    .zone-indicator.in-zone {
+    .delta-badge.lead {
       border-color: var(--success);
       color: #86efac;
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.35);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
     }
-    .zone-indicator.too-fast {
+    .delta-badge.behind {
       border-color: var(--danger);
       color: #fca5a5;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
-      animation: pulse 0.8s infinite alternate;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
     }
-    .zone-indicator.too-slow {
-      border-color: var(--warning);
-      color: #fde047;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.35);
+    .delta-badge.tied {
+      border-color: var(--ghost-cyan);
+      color: #67e8f9;
     }
 
-    .hud-stats {
+    /* HR COMPARISON HUD */
+    .hr-comparison-hud {
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid #334155;
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      align-items: flex-end;
+      gap: 3px;
+      text-align: right;
+      font-size: 0.8rem;
     }
 
-    .stat-pill {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid #334155;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .stat-pill strong {
-      color: #f8fafc;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .streak-badge {
-      background: linear-gradient(135deg, #f59e0b, #ef4444);
-      color: white;
-      font-weight: 800;
-      border: none;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
-    }
-
-    canvas#planetCanvas {
-      width: 100%;
-      height: 380px;
-      display: block;
-    }
-
-    /* Milestone progress track */
-    .milestone-track-container {
-      background: #090d16;
-      border-top: 1px solid #1e293b;
-      padding: 14px 18px;
-    }
-
-    .milestone-header {
+    .hr-live-row {
+      color: #86efac;
+      font-weight: 700;
       display: flex;
       justify-content: space-between;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-      font-weight: 600;
+      gap: 8px;
     }
 
-    .milestone-progress-bar {
-      height: 10px;
-      background: #1e293b;
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-
-    .milestone-progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
-      border-radius: 6px;
-      transition: width 0.3s ease;
-      box-shadow: 0 0 12px rgba(6, 182, 212, 0.5);
-    }
-
-    .milestone-steps {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      text-align: center;
-    }
-
-    .step-item {
-      font-size: 0.73rem;
-      color: #64748b;
+    .hr-ghost-row {
+      color: #67e8f9;
       font-weight: 600;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      transition: color 0.3s;
-    }
-    .step-item.active {
-      color: var(--cyan-glow);
-    }
-    .step-item.completed {
-      color: #86efac;
+      justify-content: space-between;
+      gap: 8px;
     }
 
-    /* Primary Big Metric */
+    /* BIG PRIMARY METRIC */
     .hero-metric {
       background: linear-gradient(145deg, #131c33, #0c1322);
       border: 1px solid var(--card-border);
       border-radius: 14px;
-      padding: 22px;
+      padding: 20px;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       position: relative;
       overflow: hidden;
     }
@@ -409,11 +350,11 @@
       font-size: 0.85rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .hero-value {
-      font-size: 4.2rem;
+      font-size: 4.4rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       color: #ffffff;
@@ -424,22 +365,22 @@
     .hero-target-hint {
       color: var(--text-muted);
       font-size: 0.88rem;
-      margin-top: 8px;
+      margin-top: 6px;
     }
 
-    /* Grid of Secondary Metrics */
+    /* GRID OF SECONDARY METRICS */
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -447,14 +388,14 @@
 
     .card-label {
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 4px;
     }
 
     .card-value {
-      font-size: 1.85rem;
+      font-size: 1.75rem;
       font-weight: 700;
       color: #ffffff;
       font-variant-numeric: tabular-nums;
@@ -462,11 +403,11 @@
 
     .card-subtext {
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       margin-top: 4px;
     }
 
-    /* Modal styling */
+    /* MODAL (CONCEPT2 LOGBOOK SELECTOR) */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -476,7 +417,7 @@
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      padding: 16px;
+      padding: 14px;
     }
     .modal-overlay.active {
       display: flex;
@@ -487,844 +428,1181 @@
       border: 1px solid #334155;
       border-radius: 16px;
       width: 100%;
-      max-width: 540px;
-      padding: 26px;
+      max-width: 680px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
       position: relative;
+      overflow: hidden;
     }
 
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      padding: 18px 22px;
       border-bottom: 1px solid var(--card-border);
-      padding-bottom: 12px;
     }
+
     .modal-header h2 {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin: 16px 0;
-    }
-    .summary-item {
-      background: #090d16;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
-    }
-    .summary-label {
-      font-size: 0.72rem;
+    .btn-close {
+      background: none;
+      border: none;
       color: var(--text-muted);
-      text-transform: uppercase;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 4px 8px;
     }
-    .summary-val {
-      font-size: 1.3rem;
-      font-weight: 700;
+    .btn-close:hover {
       color: white;
-      margin-top: 4px;
     }
 
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
+    .modal-body {
+      padding: 18px 22px;
+      overflow-y: auto;
+      flex: 1;
     }
-    .btn-outline:hover {
+
+    .token-section {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .token-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .token-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .token-input {
+      flex: 1;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: white;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+
+    .workout-filters {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .filter-chip {
       background: #1e293b;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-chip.active, .filter-chip:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
     }
 
-    @keyframes pulse {
-      from { opacity: 0.5; }
-      to { opacity: 1; }
+    .workouts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .workout-item {
+      background: #0d1527;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .workout-item:hover {
+      border-color: var(--ghost-cyan);
+      background: #0f1d35;
+      transform: translateY(-1px);
+    }
+    .workout-item.selected {
+      border-color: var(--ghost-cyan);
+      background: rgba(6, 182, 212, 0.12);
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+    }
+
+    .w-left {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .w-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .w-date {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .w-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .w-meta span strong {
+      color: #e2e8f0;
+    }
+
+    .w-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .w-btn-select {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid var(--ghost-cyan);
+      color: #67e8f9;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .w-item:hover .w-btn-select {
+      background: var(--ghost-cyan);
+      color: #020617;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 0.78rem;
+      color: #475569;
+      line-height: 1.6;
     }
   </style>
 </head>
 
 <body>
-
   <div class="container">
+    <!-- HEADER -->
     <header>
       <div class="logo-area">
-        <h1>RowTerra <span class="logo-badge">LISS BUILDER</span></h1>
-        <div class="subtitle">Steady State Colony & Planet Terraformer for Concept2 PM5</div>
+        <div class="logo-title">
+          <span>🚣‍♂️ Concept2 Ghost Regatta</span>
+          <span class="logo-badge">Replay Mode</span>
+        </div>
       </div>
-
       <div class="controls">
+        <button id="btnOpenLogbook" class="btn-ghost-select">
+          <span>👻</span> Vybrat trénink (Logbook)
+        </button>
         <button id="btnConnect" class="btn-primary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M7 7l10 10-5 5V2l5 5L7 17" />
-          </svg>
-          Připojit PM5
-        </button>
-        <button id="btnSimulate" class="btn-secondary">
-          Demo LISS
-        </button>
-        <button id="btnFastForward" class="btn-secondary" title="Zrychlený průběh pro rychlé vyzkoušení vizuálu">
-          Rychlá simulace
+          <span>⚡</span> Připojit PM5
         </button>
         <button id="btnDisconnect" class="btn-danger" style="display: none;">
           Odpojit
         </button>
+        <button id="btnSimulate" class="btn-secondary">
+          Demo závod
+        </button>
+        <button id="btnExportCsv" class="btn-secondary">
+          Export CSV
+        </button>
       </div>
     </header>
 
+    <!-- STATUS BAR -->
     <div class="status-bar">
       <div class="status-left">
         <div id="statusDot" class="status-dot"></div>
-        <span id="statusText">Odpojeno. Zapněte PM5 a klikněte na Připojit.</span>
+        <span id="statusText">Připraveno. Připojte Concept2 PM5 přes Bluetooth nebo spusťte Demo.</span>
       </div>
-      <div id="missionCountdown" style="font-weight: 700; color: #38bdf8;">Zbývá: 30:00</div>
-    </div>
-
-    <!-- Nastavení LISS mise před tréninkem -->
-    <div class="mission-settings">
-      <div class="settings-group">
-        <span style="font-weight: 700; font-size: 0.9rem; color: #f8fafc;">Nastavení mise:</span>
-        <div class="setting-item">
-          <label>Čas:</label>
-          <button class="preset-btn" data-time="20">20 min</button>
-          <button class="preset-btn active" data-time="30">30 min</button>
-          <button class="preset-btn" data-time="45">45 min</button>
-          <button class="preset-btn" data-time="60">60 min</button>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <div class="setting-item">
-          <label>Cíl tempo:</label>
-          <input type="text" id="targetPaceInput" class="setting-input" value="2:10">
-          <span style="font-size: 0.75rem; color: #64748b;">(±3 s)</span>
-        </div>
-        <div class="setting-item">
-          <label>Cíl SPM:</label>
-          <input type="number" id="targetSpmInput" class="setting-input" value="20" min="16" max="30" style="width: 55px;">
-          <span style="font-size: 0.75rem; color: #64748b;">(±2)</span>
-        </div>
-        <button id="btnApplyMission" class="btn-success" style="padding: 6px 14px; font-size: 0.85rem;">
-          Potvrdit cíl
-        </button>
+      <div>
+        <span id="workoutStatusText" style="font-weight: 600;">Čekám na první záběr</span>
       </div>
     </div>
 
-    <!-- === ROWTERRA HERNÍ VIEWPORT & ANIMOVANÁ PLANETA === -->
-    <div class="game-viewport">
-      <!-- HUD Overlay -->
-      <div class="game-hud">
-        <div id="zoneIndicator" class="zone-indicator">
-          <span id="zoneIcon">⚪</span>
-          <span id="zoneText">Čekání na záběr</span>
-        </div>
-
-        <div class="hud-stats">
-          <div id="streakPill" class="stat-pill streak-badge" style="display: none;">
-            🔥 Streak: <strong id="streakCount">0</strong> v zóně (<span id="multiplierVal">1.0x</span>)
-          </div>
-          <div class="stat-pill">
-            ⚡ Energie: <strong id="energyCount">0 MW</strong>
-          </div>
-          <div class="stat-pill">
-            👥 Populace: <strong id="popCount">0</strong>
-          </div>
+    <!-- GHOST INFO BANNER -->
+    <div class="ghost-banner">
+      <div class="ghost-details">
+        <span class="ghost-tag">Aktivní soupeř</span>
+        <span id="ghostTitle" class="ghost-title">6. 11. 2026 – 12 078 m (LISS)</span>
+        <div class="ghost-stats">
+          <span>Čas: <strong id="ghostTotalTime">1:00:19</strong></span>
+          <span>Tempo: <strong id="ghostAvgPace">2:29.8</strong></span>
+          <span>Průměrný tep: <strong id="ghostAvgHr" style="color: #67e8f9;">❤️ 124 bpm</strong></span>
         </div>
       </div>
+      <button id="btnChangeGhost" class="btn-secondary" style="padding: 5px 12px; font-size: 0.8rem;">
+        Změnit soupeře
+      </button>
+    </div>
 
-      <!-- Plátno s animací planety, vesmíru a terraformace -->
-      <canvas id="planetCanvas" width="960" height="380"></canvas>
+    <!-- REGATTA VIEWPORT CANVAS -->
+    <div class="canvas-viewport">
+      <canvas id="regattaCanvas"></canvas>
 
-      <!-- Postup terraformace / Etapy -->
-      <div class="milestone-track-container">
-        <div class="milestone-header">
-          <span>Stav terraformace: <strong id="terraStageText" style="color: #38bdf8;">1. Inicializace atmosféry</strong></span>
-          <span id="terraPercentText">0 %</span>
+      <!-- FLOATING HUD -->
+      <div class="canvas-hud">
+        <!-- DELTA (LEAD / BEHIND) -->
+        <div id="deltaBadge" class="delta-badge tied">
+          <span id="deltaIcon">⟷</span>
+          <span id="deltaText">0 m vyrovnaný start</span>
         </div>
-        <div class="milestone-progress-bar">
-          <div id="terraProgressBar" class="milestone-progress-fill"></div>
-        </div>
-        <div class="milestone-steps">
-          <div class="step-item active" id="step1">
-            <span>🌫️ 20%</span>
-            <span>Atmosféra</span>
+
+        <!-- HR COMPARISON -->
+        <div class="hr-comparison-hud">
+          <div class="hr-live-row">
+            <span>TY (Dnes):</span>
+            <span id="hudLiveHr">-- bpm</span>
           </div>
-          <div class="step-item" id="step2">
-            <span>💧 40%</span>
-            <span>Oceány</span>
-          </div>
-          <div class="step-item" id="step3">
-            <span>🌲 60%</span>
-            <span>Biosféra</span>
-          </div>
-          <div class="step-item" id="step4">
-            <span>🏙️ 80%</span>
-            <span>Kolonie</span>
-          </div>
-          <div class="step-item" id="step5">
-            <span>🛰️ 100%</span>
-            <span>Civilizace</span>
+          <div class="hr-ghost-row">
+            <span>DUCH (Tehdy):</span>
+            <span id="hudGhostHr">124 bpm</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Hlavní dominantní metrika: PACE s vodítkem Zóny 2 -->
+    <!-- HERO METRIC (500M PACE) -->
     <div class="hero-metric">
       <div class="hero-label">Aktuální tempo / 500 m</div>
       <div class="hero-value" id="valPace">--:--.-</div>
-      <div class="hero-target-hint" id="paceHint">Cílová Zóna 2: <strong>2:07.0 – 2:13.0</strong></div>
+      <div class="hero-target-hint" id="paceHint">
+        Tempo Ducha v tomto bodě: <strong id="valGhostCurrentPace" style="color: #67e8f9;">2:29.8</strong>
+      </div>
     </div>
 
-    <!-- Mřížka dalších realtime metrik -->
+    <!-- METRICS GRID -->
     <div class="metrics-grid">
+      <div class="card">
+        <div class="card-label">Vzdálenost (TY)</div>
+        <div class="card-value" id="valDistance">0 <span style="font-size: 1rem; color: var(--text-muted);">m</span></div>
+        <div class="card-subtext" id="valGhostDistance">Duch: 0 m</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Uplynulý čas</div>
+        <div class="card-value" id="valTime">00:00.0</div>
+        <div class="card-subtext" id="valRemaining">Cíl: 12 078 m</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Tepová frekvence (TY)</div>
+        <div class="card-value" id="valHeartRate" style="color: #86efac;">-- bpm</div>
+        <div class="card-subtext" id="valHrDiff">Srovnání: --</div>
+      </div>
       <div class="card">
         <div class="card-label">Výkon</div>
         <div class="card-value" id="valWatts">0 <span style="font-size: 1rem; color: var(--text-muted);">W</span></div>
         <div class="card-subtext" id="valCalories">0 Cal/hod</div>
       </div>
-
       <div class="card">
-        <div class="card-label">Frekvence záběrů</div>
+        <div class="card-label">Kadence (SPM)</div>
         <div class="card-value" id="valSpm">0 <span style="font-size: 1rem; color: var(--text-muted);">SPM</span></div>
-        <div class="card-subtext">Cíl: <span id="spmHint">18 – 22 SPM</span></div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">Vzdálenost</div>
-        <div class="card-value" id="valDistance">0 <span style="font-size: 1rem; color: var(--text-muted);">m</span></div>
-        <div class="card-subtext">Ujeto celkem</div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">Uplynulý čas</div>
-        <div class="card-value" id="valTime">00:00.0</div>
-        <div class="card-subtext">
-          Tep: <span id="valHeartRate">-- bpm</span>
-        </div>
+        <div class="card-subtext" id="valGhostSpm">Duch: 21 SPM</div>
       </div>
     </div>
 
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 24px;">
-      <button id="btnManualFinish" class="btn-secondary" style="font-size: 0.85rem;">
-        ⏹ Ukončit trénink a zobrazit kartu planety
-      </button>
-    </div>
+    <!-- FOOTER -->
+    <footer>
+      Concept2 PM5 Bluetooth Smart Integration | Web Bluetooth API<br>
+      Ghost Replay využívá přesná data záběr po záběru (Strokes & Heart Rate) z Concept2 Logbook API.
+    </footer>
+  </div>
 
-    <!-- MODAL: Shrnutí tréninku a karta dokončené planety -->
-    <div id="modalWorkoutSummary" class="modal-overlay">
-      <div class="modal-box">
-        <div class="modal-header">
-          <h2>🌍 Mise dokončena: Nový svět stvořen!</h2>
-          <button class="modal-close" onclick="closeModal('modalWorkoutSummary')">&times;</button>
-        </div>
-
-        <div style="background: linear-gradient(135deg, #090d16, #1e293b); border: 1px solid #334155; border-radius: 12px; padding: 14px; text-align: center; margin-bottom: 16px;">
-          <div style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Planeta</div>
-          <div id="planetName" style="font-size: 1.5rem; font-weight: 800; color: #38bdf8; margin: 4px 0;">Nova Miroslav Prime</div>
-          <div id="planetRank" style="font-size: 0.9rem; color: #a7f3d0; font-weight: 700;">Hodnocení: Třída Eden (100% terraformace)</div>
-        </div>
-
-        <div class="summary-grid">
-          <div class="summary-item">
-            <div class="summary-label">Čas mise</div>
-            <div class="summary-val" id="sumTime">00:00.0</div>
+  <!-- MODAL: VYBER TRENINKU Z LOGBOOKU -->
+  <div id="logbookModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2><span>👻</span> Vybrat trénink z Logbooku</h2>
+        <button id="btnCloseModal" class="btn-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- TOKEN INPUT -->
+        <div class="token-section">
+          <div class="token-label">
+            <span>Concept2 Personal Access Token:</span>
+            <a href="https://log.concept2.com/profile/integrations" target="_blank" style="color: var(--ghost-cyan); text-decoration: none;">Získat token v profilu &rarr;</a>
           </div>
-          <div class="summary-item">
-            <div class="summary-label">Vzdálenost</div>
-            <div class="summary-val" id="sumDistance">0 m</div>
+          <div class="token-input-row">
+            <input type="password" id="inputToken" class="token-input" placeholder="Vložte váš Concept2 API token...">
+            <button id="btnFetchWorkouts" class="btn-ghost-select">Načíst jízdy</button>
           </div>
-          <div class="summary-item">
-            <div class="summary-label">V Zóně 2</div>
-            <div class="summary-val" id="sumZoneAdherence">0 %</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Generovaná populace</div>
-            <div class="summary-val" id="sumPopulation">0</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Průměrné tempo</div>
-            <div class="summary-val" id="sumPace">--:--.-</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-label">Průměrný výkon</div>
-            <div class="summary-val" id="sumWatts">0 W</div>
+          <div style="font-size: 0.72rem; color: #64748b; margin-top: 5px;">
+            Token je uložen pouze ve vašem prohlížeči (localStorage) a nikam se neodesílá.
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 18px;">
-          <button id="btnDownloadCsv" class="btn-primary" style="width: 100%; justify-content: center;">
-            💾 Stáhnout CSV záznam tréninku
-          </button>
-          <button class="btn-outline" onclick="closeModal('modalWorkoutSummary')" style="width: 100%; justify-content: center;">
-            Zavřít
-          </button>
+        <!-- FILTRY -->
+        <div class="workout-filters">
+          <div class="filter-chip active" data-filter="all">Všechny</div>
+          <div class="filter-chip" data-filter="12000">12 km (1 hod)</div>
+          <div class="filter-chip" data-filter="10000">10 km</div>
+          <div class="filter-chip" data-filter="6000">6 km</div>
+          <div class="filter-chip" data-filter="4000">4 km</div>
+          <div class="filter-chip" data-filter="preset">Vzoroví soupeři</div>
+        </div>
+
+        <!-- SEZNAM JIZD -->
+        <div id="workoutsList" class="workouts-list">
+          <div style="text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.88rem;">
+            Načítám vaše tréninky z Concept2 Logbooku...
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // === MODAL OVLÁDÁNÍ ===
-    function openModal(id) {
-      document.getElementById(id).classList.add('active');
-    }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-    }
-
-    // === HERNÍ NASTAVENÍ LISS MISE ===
-    let missionDurationMinutes = 30; // Výchozí: 30 min
-    let targetPaceSeconds = 130; // 2:10 = 130 sekund
-    let targetSpm = 20; // 20 SPM
-    const paceTolerance = 3; // +- 3s
-    const spmTolerance = 2; // +- 2 SPM
-
-    const presetBtns = document.querySelectorAll('.preset-btn');
-    const targetPaceInput = document.getElementById('targetPaceInput');
-    const targetSpmInput = document.getElementById('targetSpmInput');
-    const btnApplyMission = document.getElementById('btnApplyMission');
-    const paceHint = document.getElementById('paceHint');
-    const spmHint = document.getElementById('spmHint');
-    const missionCountdown = document.getElementById('missionCountdown');
-
-    // UI Herní HUD prvky
-    const zoneIndicator = document.getElementById('zoneIndicator');
-    const zoneIcon = document.getElementById('zoneIcon');
-    const zoneText = document.getElementById('zoneText');
-    const streakPill = document.getElementById('streakPill');
-    const streakCount = document.getElementById('streakCount');
-    const multiplierVal = document.getElementById('multiplierVal');
-    const energyCount = document.getElementById('energyCount');
-    const popCount = document.getElementById('popCount');
-    const terraProgressBar = document.getElementById('terraProgressBar');
-    const terraPercentText = document.getElementById('terraPercentText');
-    const terraStageText = document.getElementById('terraStageText');
-
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const step3 = document.getElementById('step3');
-    const step4 = document.getElementById('step4');
-    const step5 = document.getElementById('step5');
-
-    // UI Telemetrie
-    const valPace = document.getElementById('valPace');
-    const valWatts = document.getElementById('valWatts');
-    const valCalories = document.getElementById('valCalories');
-    const valSpm = document.getElementById('valSpm');
-    const valDistance = document.getElementById('valDistance');
-    const valTime = document.getElementById('valTime');
-    const valHeartRate = document.getElementById('valHeartRate');
-    const btnManualFinish = document.getElementById('btnManualFinish');
-    const btnDownloadCsv = document.getElementById('btnDownloadCsv');
-
-    // Herní proměnné
-    let totalEnergyMW = 0;
-    let population = 0;
-    let inZoneStreak = 0;
-    let zoneMultiplier = 1.0;
-    let totalSamples = 0;
-    let inZoneSamples = 0;
-    let beamIntensity = 0; // Efekt paprsku při záběru
-    let isMissionCompleted = false;
-
-    // Přepínání přednastavených časů
-    presetBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        presetBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        missionDurationMinutes = parseInt(btn.dataset.time, 10);
-        updateMissionHints();
-      });
-    });
-
-    btnApplyMission.addEventListener('click', () => {
-      parsePaceInput();
-      targetSpm = parseInt(targetSpmInput.value, 10) || 20;
-      updateMissionHints();
-      alert(`Mise nastavena: ${missionDurationMinutes} minut | Cíl tempo: ${formatPace(targetPaceSeconds)} (±${paceTolerance}s) | Cíl: ${targetSpm} SPM`);
-    });
-
-    function parsePaceInput() {
-      const val = targetPaceInput.value.trim();
-      const parts = val.split(':');
-      if (parts.length === 2) {
-        const m = parseInt(parts[0], 10) || 0;
-        const s = parseFloat(parts[1]) || 0;
-        targetPaceSeconds = (m * 60) + s;
-      }
-    }
-
-    function updateMissionHints() {
-      const minP = Math.max(60, targetPaceSeconds - paceTolerance);
-      const maxP = targetPaceSeconds + paceTolerance;
-      paceHint.innerHTML = `Cílová Zóna 2: <strong>${formatPace(minP)} – ${formatPace(maxP)}</strong>`;
-      spmHint.textContent = `${Math.max(14, targetSpm - spmTolerance)} – ${targetSpm + spmTolerance} SPM`;
-    }
-    updateMissionHints();
-
-    // === HODNOCENÍ ZÓNY 2 ===
-    function evaluateZone(currentPace, currentSpm) {
-      if (!currentPace || currentPace <= 0 || currentPace > 360) {
-        return 'idle';
-      }
-
-      totalSamples++;
-
-      const isPaceTooFast = currentPace < (targetPaceSeconds - paceTolerance);
-      const isPaceTooSlow = currentPace > (targetPaceSeconds + paceTolerance);
-      const isSpmOk = Math.abs(currentSpm - targetSpm) <= spmTolerance;
-
-      if (isPaceTooFast) {
-        inZoneStreak = Math.max(0, inZoneStreak - 2);
-        return 'too-fast';
-      } else if (isPaceTooSlow) {
-        inZoneStreak = Math.max(0, inZoneStreak - 1);
-        return 'too-slow';
-      } else {
-        // V zóně!
-        inZoneSamples++;
-        inZoneStreak++;
-        return 'in-zone';
-      }
-    }
-
-    function updateHud(zoneState) {
-      zoneIndicator.className = 'zone-indicator';
-
-      if (zoneState === 'in-zone') {
-        zoneIndicator.classList.add('in-zone');
-        zoneIcon.textContent = '🟢';
-        zoneText.textContent = 'V ZÓNĚ 2 (Perfektní tempo)';
-
-        // Výpočet multiplikátoru
-        if (inZoneStreak > 150) zoneMultiplier = 2.5;
-        else if (inZoneStreak > 80) zoneMultiplier = 2.0;
-        else if (inZoneStreak > 30) zoneMultiplier = 1.5;
-        else if (inZoneStreak > 10) zoneMultiplier = 1.2;
-        else zoneMultiplier = 1.0;
-
-        streakPill.style.display = 'inline-flex';
-        streakCount.textContent = inZoneStreak;
-        multiplierVal.textContent = `${zoneMultiplier.toFixed(1)}x`;
-      } else if (zoneState === 'too-fast') {
-        zoneIndicator.classList.add('too-fast');
-        zoneIcon.textContent = '🔴';
-        zoneText.textContent = 'PŘÍLIŠ RYCHLE! (Zpomalte do Zóny 2)';
-        zoneMultiplier = 1.0;
-      } else if (zoneState === 'too-slow') {
-        zoneIndicator.classList.add('too-slow');
-        zoneIcon.textContent = '🟡';
-        zoneText.textContent = 'PŘÍLIŠ POMALU (Přidejte)';
-        zoneMultiplier = 1.0;
-      } else {
-        zoneIcon.textContent = '⚪';
-        zoneText.textContent = 'Čekání na záběr';
-      }
-
-      energyCount.textContent = `${Math.round(totalEnergyMW).toLocaleString('cs-CZ')} MW`;
-      popCount.textContent = Math.round(population).toLocaleString('cs-CZ');
-    }
-
-    // === ZÁZNAM TRÉNINKU (WORKOUT TRACKER) ===
-    let isRecording = false;
-    let workoutSession = {
-      startTime: null,
-      samples: [],
-      startDistance: 0,
-      startDuration: 0,
-      lastCalculated: null
-    };
-
-    const currentTelemetry = {
-      distance: 0,
+    // =========================================================================
+    // 1. STAV A TELEMETRIE HRÁČE & DUCHA
+    // =========================================================================
+    const playerTelemetry = {
       elapsedTime: 0,
+      distance: 0,
       pace: 0,
       watts: 0,
       spm: 0,
-      heartRate: 0
+      heartRate: 0,
+      calories: 0,
+      strokeState: 0,
+      oarAngle: 0
     };
 
-    function startWorkout() {
-      if (isRecording) return;
-      isRecording = true;
-      workoutSession = {
-        startTime: new Date(),
-        samples: [],
-        startDistance: currentTelemetry.distance || 0,
-        startDuration: currentTelemetry.elapsedTime || 0,
-        lastCalculated: null
+    // Aktivní Ghost profil
+    let currentGhost = {
+      id: 'default_12k',
+      title: '6. 11. 2026 – 12 078 m (LISS)',
+      date: '2026-11-06 14:39',
+      distance: 12078,
+      totalTime: 3619.3, // v sekundách
+      avgPace: 149.8, // 2:29.8
+      avgHr: 124,
+      strokes: [] // Pole { t: sec, d: m, p: sec, spm: num, hr: num }
+    };
+
+    // Telemetrie Ducha v reálném čase
+    const ghostTelemetry = {
+      elapsedTime: 0,
+      distance: 0,
+      pace: 149.8,
+      spm: 21,
+      heartRate: 124,
+      oarAngle: 0
+    };
+
+    let workoutSamples = [];
+    let isRecording = false;
+    let workoutStartTime = null;
+
+    // Vzorové tréninky (pokud by nebyl k dispozici internet/API)
+    const PRESET_GHOSTS = [
+      {
+        id: 'preset_liss_10k',
+        title: 'Vzor: Steady LISS 10 000 m @ 2:15',
+        date: 'Vzorový trénink',
+        distance: 10000,
+        totalTime: 2700,
+        avgPace: 135.0,
+        avgHr: 132,
+        generateStrokes: true
+      },
+      {
+        id: 'preset_tempo_5k',
+        title: 'Vzor: Tempo 5 000 m @ 2:02',
+        date: 'Vzorový trénink',
+        distance: 5000,
+        totalTime: 1220,
+        avgPace: 122.0,
+        avgHr: 154,
+        generateStrokes: true
+      },
+      {
+        id: 'preset_recovery_6k',
+        title: 'Vzor: Regenerační 6 000 m @ 2:25',
+        date: 'Vzorový trénink',
+        distance: 6000,
+        totalTime: 1740,
+        avgPace: 145.0,
+        avgHr: 118,
+        generateStrokes: true
+      }
+    ];
+
+    let cachedWorkouts = [];
+
+    // =========================================================================
+    // 2. CONCEPT2 LOGBOOK INTEGRACE (FETCH RESULTS & STROKES)
+    // =========================================================================
+    const C2_API_BASE = 'https://log.concept2.com/api';
+    const inputToken = document.getElementById('inputToken');
+    const btnFetchWorkouts = document.getElementById('btnFetchWorkouts');
+    const workoutsList = document.getElementById('workoutsList');
+    const logbookModal = document.getElementById('logbookModal');
+    const btnOpenLogbook = document.getElementById('btnOpenLogbook');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnChangeGhost = document.getElementById('btnChangeGhost');
+
+    // Uložený token v localStorage
+    const savedToken = localStorage.getItem('c2_access_token') || '';
+    if (savedToken) {
+      inputToken.value = savedToken;
+    }
+
+    async function loadWorkoutsFromLogbook() {
+      const token = inputToken.value.trim();
+      if (!token) {
+        workoutsList.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--danger);">
+          Prosím zadejte váš Concept2 Personal Access Token.
+        </div>`;
+        return;
+      }
+
+      localStorage.setItem('c2_access_token', token);
+      workoutsList.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--text-muted);">
+        Stahuji vaše tréninky z Concept2 Logbooku...
+      </div>`;
+
+      try {
+        const res = await fetch(`${C2_API_BASE}/users/me/results?limit=50`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/vnd.c2logbook.v1+json'
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Chyba API (${res.status}): Zkontrolujte platnost tokenu.`);
+        }
+
+        const data = await res.json();
+        cachedWorkouts = data.data || [];
+        renderWorkoutsList(cachedWorkouts);
+
+      } catch (err) {
+        console.error('Chyba načítání Logbooku:', err);
+        workoutsList.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--danger);">
+          Nepodařilo se načíst tréninky: ${err.message}<br>
+          <button onclick="renderPresetWorkouts()" class="btn-secondary" style="margin-top: 10px;">Zobrazit vzorové soupeře</button>
+        </div>`;
+      }
+    }
+
+    function renderWorkoutsList(workouts, filter = 'all') {
+      workoutsList.innerHTML = '';
+
+      let filtered = workouts;
+      if (filter === '12000') {
+        filtered = workouts.filter(w => w.distance >= 11500 && w.distance <= 12500);
+      } else if (filter === '10000') {
+        filtered = workouts.filter(w => w.distance >= 9500 && w.distance <= 10500);
+      } else if (filter === '6000') {
+        filtered = workouts.filter(w => w.distance >= 5500 && w.distance <= 6500);
+      } else if (filter === '4000') {
+        filtered = workouts.filter(w => w.distance >= 3500 && w.distance <= 4500);
+      } else if (filter === 'preset') {
+        renderPresetWorkouts();
+        return;
+      }
+
+      if (filtered.length === 0) {
+        workoutsList.innerHTML = `<div style="text-align: center; padding: 25px; color: var(--text-muted);">
+          Žádné tréninky neodpovídají vybranému filtru.
+        </div>`;
+        return;
+      }
+
+      filtered.forEach(w => {
+        const item = document.createElement('div');
+        item.className = `workout-item ${currentGhost.id === String(w.id) ? 'selected' : ''}`;
+        
+        const dateObj = new Date(w.date);
+        const dateStr = !isNaN(dateObj) 
+          ? dateObj.toLocaleDateString('cs-CZ', { weekday: 'short', day: 'numeric', month: 'numeric', hour: '2-digit', minute: '2-digit' })
+          : w.date;
+
+        const avgHr = w.heart_rate && w.heart_rate.average ? `${w.heart_rate.average} bpm` : '-- bpm';
+        
+        // Výpočet splitu
+        let paceStr = '--:--.-';
+        if (w.distance > 0 && w.time > 0) {
+          // Concept2 time v results je v desetinách sekundy (nebo sekundách dle verze)
+          // ověřeno: time_formatted existuje
+          paceStr = w.time_formatted || formatTime(w.time / 10);
+        }
+
+        item.innerHTML = `
+          <div class="w-left">
+            <div class="w-title">
+              <span>🚣‍♂️ ${w.distance.toLocaleString('cs-CZ')} m</span>
+              ${w.stroke_data ? '<span style="font-size: 0.68rem; background: rgba(34, 197, 94, 0.2); color: #86efac; border: 1px solid #16a34a; padding: 2px 6px; border-radius: 4px;">Plná telemetrie</span>' : ''}
+            </div>
+            <div class="w-date">${dateStr}</div>
+            <div class="w-meta">
+              <span>Čas: <strong>${w.time_formatted || '--'}</strong></span>
+              <span>Tep: <strong style="color: #67e8f9;">❤️ ${avgHr}</strong></span>
+              <span>Kadence: <strong>${w.stroke_rate || '--'} SPM</strong></span>
+            </div>
+          </div>
+          <div class="w-right">
+            <button class="w-btn-select">Závodit</button>
+          </div>
+        `;
+
+        item.addEventListener('click', () => selectGhostWorkout(w));
+        workoutsList.appendChild(item);
+      });
+    }
+
+    function renderPresetWorkouts() {
+      workoutsList.innerHTML = '';
+      PRESET_GHOSTS.forEach(w => {
+        const item = document.createElement('div');
+        item.className = 'workout-item';
+        item.innerHTML = `
+          <div class="w-left">
+            <div class="w-title">⭐ ${w.title}</div>
+            <div class="w-date">${w.date}</div>
+            <div class="w-meta">
+              <span>Čas: <strong>${formatTime(w.totalTime)}</strong></span>
+              <span>Tempo: <strong>${formatPace(w.avgPace)}</strong></span>
+              <span>Tep: <strong style="color: #67e8f9;">❤️ ${w.avgHr} bpm</strong></span>
+            </div>
+          </div>
+          <div class="w-right">
+            <button class="w-btn-select">Zvolit</button>
+          </div>
+        `;
+        item.addEventListener('click', () => selectPresetGhost(w));
+        workoutsList.appendChild(item);
+      });
+    }
+
+    // Výběr konkrétního tréninku z Logbooku
+    async function selectGhostWorkout(w) {
+      const token = inputToken.value.trim();
+      logbookModal.classList.remove('active');
+      setConnectionStatus('connecting', `Stahuji detailní telemetrii soupeře (${w.distance} m)...`);
+
+      try {
+        let strokes = [];
+        if (w.stroke_data && token) {
+          const res = await fetch(`${C2_API_BASE}/users/me/results/${w.id}/strokes`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.c2logbook.v1+json'
+            }
+          });
+          if (res.ok) {
+            const rawStrokes = await res.json();
+            if (Array.isArray(rawStrokes.data)) {
+              // Převod: t je v desetinách s, d je v desetinách m, p v desetinách s
+              strokes = rawStrokes.data.map(s => ({
+                t: s.t * 0.1,
+                d: s.d * 0.1,
+                p: s.p * 0.1,
+                spm: s.spm,
+                hr: s.hr
+              }));
+            }
+          }
+        }
+
+        // Pokud trénink nemá detailní záběry, vygenerujeme syntetické z průměrů
+        if (strokes.length === 0) {
+          strokes = generateStrokesFromSummary(w.distance, w.time * 0.1, w.stroke_rate || 21, w.heart_rate?.average || 125);
+        }
+
+        // Nastavíme aktivního ducha
+        const dateObj = new Date(w.date);
+        const dateStr = !isNaN(dateObj) ? dateObj.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' }) : w.date;
+
+        currentGhost = {
+          id: String(w.id),
+          title: `${dateStr} – ${w.distance.toLocaleString('cs-CZ')} m`,
+          date: dateStr,
+          distance: w.distance,
+          totalTime: strokes[strokes.length - 1].t,
+          avgPace: (strokes[strokes.length - 1].t / (w.distance / 500)),
+          avgHr: w.heart_rate?.average || 125,
+          strokes: strokes
+        };
+
+        updateGhostBanner();
+        setConnectionStatus('disconnected', `Soupeř připraven: ${currentGhost.title} (${strokes.length} záběrů)`);
+
+      } catch (err) {
+        console.error('Chyba při stahování strokes:', err);
+        selectPresetGhost(PRESET_GHOSTS[0]);
+      }
+    }
+
+    function selectPresetGhost(preset) {
+      logbookModal.classList.remove('active');
+      const strokes = generateStrokesFromSummary(preset.distance, preset.totalTime, 21, preset.avgHr);
+      currentGhost = {
+        id: preset.id,
+        title: preset.title,
+        date: preset.date,
+        distance: preset.distance,
+        totalTime: preset.totalTime,
+        avgPace: preset.avgPace,
+        avgHr: preset.avgHr,
+        strokes: strokes
       };
+      updateGhostBanner();
+    }
 
-      totalEnergyMW = 0;
-      population = 0;
-      inZoneStreak = 0;
-      totalSamples = 0;
-      inZoneSamples = 0;
-      isMissionCompleted = false;
+    function generateStrokesFromSummary(distance, totalTime, spm, hr) {
+      const list = [];
+      const strokeCount = Math.max(10, Math.round((totalTime / 60) * spm));
+      const dt = totalTime / strokeCount;
+      const dd = distance / strokeCount;
+      const pace = (totalTime / (distance / 500));
 
-      setConnectionStatus('connected', 'Mise odstartována! Budujeme nový svět...');
+      for (let i = 1; i <= strokeCount; i++) {
+        const t = i * dt;
+        const d = i * dd;
+        // Mírný přirozený drift tepu v průběhu tréninku (aerobní drift)
+        const currentHr = Math.round((hr - 8) + (i / strokeCount) * 16 + (Math.sin(i) * 2));
+        list.push({
+          t: t,
+          d: d,
+          p: pace,
+          spm: spm,
+          hr: currentHr
+        });
+      }
+      return list;
+    }
+
+    function updateGhostBanner() {
+      document.getElementById('ghostTitle').textContent = currentGhost.title;
+      document.getElementById('ghostTotalTime').textContent = formatTime(currentGhost.totalTime);
+      document.getElementById('ghostAvgPace').textContent = formatPace(currentGhost.avgPace);
+      document.getElementById('ghostAvgHr').textContent = `❤️ ${currentGhost.avgHr} bpm`;
+      document.getElementById('valRemaining').textContent = `Cíl: ${currentGhost.distance.toLocaleString('cs-CZ')} m`;
+      document.getElementById('hudGhostHr').textContent = `${currentGhost.avgHr} bpm`;
+    }
+
+    // =========================================================================
+    // 3. GHOST TELEMETRIE V REÁLNÉM ČASE (INTERPOLACE)
+    // =========================================================================
+    function getGhostStateAtTime(currentTime) {
+      const strokes = currentGhost.strokes;
+      if (!strokes || strokes.length === 0) {
+        return { distance: (currentTime / currentGhost.avgPace) * 500, pace: currentGhost.avgPace, spm: 21, hr: currentGhost.avgHr };
+      }
+
+      if (currentTime <= 0) {
+        return { distance: 0, pace: strokes[0].p, spm: strokes[0].spm, hr: strokes[0].hr };
+      }
+
+      const lastStroke = strokes[strokes.length - 1];
+      if (currentTime >= lastStroke.t) {
+        return { distance: lastStroke.d, pace: lastStroke.p, spm: 0, hr: lastStroke.hr };
+      }
+
+      // Binární vyhledání nejbližšího záběru v čase
+      let low = 0;
+      let high = strokes.length - 1;
+      while (low <= high) {
+        const mid = (low + high) >> 1;
+        if (strokes[mid].t < currentTime) {
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+
+      const idx = Math.max(0, Math.min(strokes.length - 1, low));
+      const sPrev = strokes[Math.max(0, idx - 1)];
+      const sNext = strokes[idx];
+
+      const dt = sNext.t - sPrev.t;
+      const ratio = dt > 0 ? (currentTime - sPrev.t) / dt : 0;
+
+      const interpolatedDistance = sPrev.d + (sNext.d - sPrev.d) * ratio;
+      const interpolatedPace = sPrev.p + (sNext.p - sPrev.p) * ratio;
+      const interpolatedHr = Math.round(sPrev.hr + (sNext.hr - sPrev.hr) * ratio);
+
+      return {
+        distance: interpolatedDistance,
+        pace: interpolatedPace,
+        spm: sNext.spm,
+        hr: interpolatedHr
+      };
+    }
+
+    // =========================================================================
+    // 4. ANIMACE VIRTUAL REGATTY (CANVAS)
+    // =========================================================================
+    const canvas = document.getElementById('regattaCanvas');
+    const ctx = canvas.getContext('2d');
+    let waterOffset = 0;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function renderRegatta(now) {
+      const width = canvas.getBoundingClientRect().width;
+      const height = canvas.getBoundingClientRect().height;
+
+      // 1. Voda a proudění řeky
+      const waterGrad = ctx.createLinearGradient(0, 0, 0, height);
+      waterGrad.addColorStop(0, '#041d33');
+      waterGrad.addColorStop(0.5, '#072e4f');
+      waterGrad.addColorStop(1, '#031728');
+      ctx.fillStyle = waterGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Posun vodní hladiny podle rychlosti hráče
+      const currentSpeed = playerTelemetry.pace > 0 ? (500 / playerTelemetry.pace) : 0;
+      waterOffset += (currentSpeed * 0.4 + 0.5);
+
+      // Vlnky
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+      for (let y = 30; y < height; y += 35) {
+        ctx.beginPath();
+        for (let x = 0; x < width; x += 40) {
+          const waveY = y + Math.sin((x + waterOffset) * 0.04) * 3;
+          ctx.lineTo(x, waveY);
+        }
+        ctx.stroke();
+      }
+
+      // 2. Dráhy (Lanes)
+      const laneHeight = height / 2;
+      const lane1Y = laneHeight * 0.5; // Dráha hráče
+      const lane2Y = laneHeight * 1.5; // Dráha ducha
+
+      // Dělící čára mezi dráhami
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.setLineDash([12, 12]);
+      ctx.beginPath();
+      ctx.moveTo(0, laneHeight);
+      ctx.lineTo(width, laneHeight);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Bójky podél drah
+      for (let bx = - (waterOffset * 2 % 120); bx < width + 120; bx += 120) {
+        // Žlutá bójka na středu
+        ctx.fillStyle = '#eab308';
+        ctx.beginPath();
+        ctx.arc(bx, laneHeight, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Červené bójky na okrajích
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(bx, 15, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(bx, height - 15, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 3. Výpočet pozic lodí na obrazovce
+      // Hráč a duch závodí. Referenční bod: střed obrazovky (width * 0.45).
+      // Delta metrů posouvá lodě dopředu/dozadu (1 metr = 4 pixely na obrazovce).
+      const pDist = playerTelemetry.distance;
+      const gDist = ghostTelemetry.distance;
+      const deltaMeters = pDist - gDist;
+
+      // Pozice hráče a ducha na ose X
+      const baseCenterX = width * 0.42;
+      const pixelsPerMeter = 4.2;
+
+      // Omezení posunu tak, aby obě lodě zůstaly vždy viditelné na obrazovce
+      const maxOffset = width * 0.35;
+      const playerOffsetX = Math.max(-maxOffset, Math.min(maxOffset, (deltaMeters * 0.5) * pixelsPerMeter));
+      const ghostOffsetX = -playerOffsetX;
+
+      const playerX = baseCenterX + playerOffsetX;
+      const ghostX = baseCenterX + ghostOffsetX;
+
+      // 4. Vykreslení lodě DUCHA (Spodní dráha)
+      drawBoat({
+        x: ghostX,
+        y: lane2Y,
+        isGhost: true,
+        name: currentGhost.title.split('–')[0].trim() || 'DUCH',
+        hr: ghostTelemetry.heartRate,
+        pace: ghostTelemetry.pace,
+        spm: ghostTelemetry.spm,
+        time: now,
+        strokeRate: ghostTelemetry.spm
+      });
+
+      // 5. Vykreslení lodě HRÁČE (Horní dráha)
+      drawBoat({
+        x: playerX,
+        y: lane1Y,
+        isGhost: false,
+        name: 'TY (ŽIVĚ)',
+        hr: playerTelemetry.heartRate,
+        pace: playerTelemetry.pace,
+        spm: playerTelemetry.spm,
+        time: now,
+        strokeRate: playerTelemetry.spm
+      });
+
+      // 6. Svislá spojovací vodicí ryska pro přesné porovnání špiček lodí
+      ctx.strokeStyle = deltaMeters >= 0 ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(playerX + 50, lane1Y);
+      ctx.lineTo(ghostX + 50, lane2Y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      requestAnimationFrame(renderRegatta);
+    }
+
+    // Pomocná funkce pro vykreslení lodi a veslaře
+    function drawBoat({ x, y, isGhost, name, hr, pace, spm, time, strokeRate }) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Barvy a aura
+      const primaryColor = isGhost ? '#06b6d4' : '#22c55e';
+      const glowColor = isGhost ? 'rgba(6, 182, 212, 0.6)' : 'rgba(34, 197, 94, 0.6)';
+      const bodyColor = isGhost ? 'rgba(14, 116, 144, 0.85)' : '#1e293b';
+
+      // Záře
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = isGhost ? 18 : 12;
+
+      // Brázda za lodí (Wake)
+      const wakeGrad = ctx.createLinearGradient(-100, 0, -40, 0);
+      wakeGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      wakeGrad.addColorStop(1, isGhost ? 'rgba(6, 182, 212, 0.35)' : 'rgba(255, 255, 255, 0.4)');
+      ctx.fillStyle = wakeGrad;
+      ctx.beginPath();
+      ctx.moveTo(-40, -4);
+      ctx.lineTo(-120, -14);
+      ctx.lineTo(-120, 14);
+      ctx.lineTo(-40, 4);
+      ctx.closePath();
+      ctx.fill();
+
+      // Trup lodi (Racing Shell)
+      ctx.fillStyle = bodyColor;
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 2.5;
+
+      ctx.beginPath();
+      ctx.moveTo(55, 0); // Špička lodi (Bow)
+      ctx.bezierCurveTo(30, -7, -30, -8, -50, -5); // Horní bok
+      ctx.lineTo(-55, 0); // Záď (Stern)
+      ctx.bezierCurveTo(-30, 8, 30, 7, 55, 0); // Dolní bok
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Kokpit
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(-18, -4, 30, 8);
+
+      // Veslař - animace záběru (Drive / Recovery)
+      // Rychlost cyklu je určena kadencí (SPM)
+      const cadence = Math.max(16, strokeRate || 20);
+      const cyclePeriod = 60 / cadence; // doba jednoho záběru v sekundách
+      const phase = (time * 0.001) % cyclePeriod;
+      const progress = phase / cyclePeriod;
+
+      // Záběr (Drive = 0-0.35 doby cyklu, Recovery = 0.35-1.0)
+      let oarAngle;
+      if (progress < 0.35) {
+        // Drive: vesla táhnou z -40° do +35°
+        const driveProgress = progress / 0.35;
+        oarAngle = -0.7 + (driveProgress * 1.3);
+      } else {
+        // Recovery: pomalejší návrat zpět
+        const recProgress = (progress - 0.35) / 0.65;
+        oarAngle = 0.6 - (recProgress * 1.3);
+      }
+
+      // Hlava a trup veslaře
+      ctx.fillStyle = isGhost ? '#67e8f9' : '#f8fafc';
+      ctx.beginPath();
+      ctx.arc(0, 0, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Vesla (Oars)
+      ctx.strokeStyle = isGhost ? 'rgba(103, 232, 249, 0.9)' : '#e2e8f0';
+      ctx.lineWidth = 2;
+
+      // Levé veslo
+      ctx.beginPath();
+      ctx.moveTo(-5, -6);
+      const oar1X = -5 + Math.sin(oarAngle) * 32;
+      const oar1Y = -6 - Math.cos(oarAngle) * 32;
+      ctx.lineTo(oar1X, oar1Y);
+      ctx.stroke();
+
+      // List levého vesla
+      ctx.fillStyle = primaryColor;
+      ctx.fillRect(oar1X - 2, oar1Y - 4, 6, 8);
+
+      // Pravé veslo
+      ctx.beginPath();
+      ctx.moveTo(-5, 6);
+      const oar2X = -5 + Math.sin(oarAngle) * 32;
+      const oar2Y = 6 + Math.cos(oarAngle) * 32;
+      ctx.lineTo(oar2X, oar2Y);
+      ctx.stroke();
+
+      // List pravého vesla
+      ctx.fillRect(oar2X - 2, oar2Y - 4, 6, 8);
+
+      // Reset stínu pro text
+      ctx.shadowBlur = 0;
+
+      // Štítek nad lodí
+      const tagY = -32;
+      const hrText = hr > 0 ? `❤️ ${hr} bpm` : '-- bpm';
+      const paceText = pace > 0 ? formatPace(pace) : '--:--';
+
+      // Pozadí štítku
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      ctx.strokeStyle = primaryColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(-55, tagY - 14, 110, 26, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      // Text štítku
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${name} · ${hrText}`, 0, tagY - 1);
+
+      ctx.fillStyle = isGhost ? '#67e8f9' : '#86efac';
+      ctx.font = '9px monospace';
+      ctx.fillText(`${paceText}/500m · ${cadence} SPM`, 0, tagY + 9);
+
+      ctx.restore();
+    }
+
+    requestAnimationFrame(renderRegatta);
+
+    // =========================================================================
+    // 5. TELEMETRIE DASHBOARD & HUD UPDATE
+    // =========================================================================
+    const valPace = document.getElementById('valPace');
+    const paceHint = document.getElementById('paceHint');
+    const valGhostCurrentPace = document.getElementById('valGhostCurrentPace');
+    const valDistance = document.getElementById('valDistance');
+    const valGhostDistance = document.getElementById('valGhostDistance');
+    const valTime = document.getElementById('valTime');
+    const valHeartRate = document.getElementById('valHeartRate');
+    const valHrDiff = document.getElementById('valHrDiff');
+    const valWatts = document.getElementById('valWatts');
+    const valCalories = document.getElementById('valCalories');
+    const valSpm = document.getElementById('valSpm');
+    const valGhostSpm = document.getElementById('valGhostSpm');
+    const deltaBadge = document.getElementById('deltaBadge');
+    const deltaIcon = document.getElementById('deltaIcon');
+    const deltaText = document.getElementById('deltaText');
+    const hudLiveHr = document.getElementById('hudLiveHr');
+    const hudGhostHr = document.getElementById('hudGhostHr');
+    const workoutStatusText = document.getElementById('workoutStatusText');
+
+    function formatPace(sec) {
+      if (!sec || sec <= 0 || sec > 600) return '--:--.-';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      const t = Math.floor((sec % 1) * 10);
+      return `${m}:${s.toString().padStart(2, '0')}.${t}`;
+    }
+
+    function formatTime(totalSec) {
+      if (!totalSec || totalSec <= 0) return '00:00.0';
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = Math.floor(totalSec % 60);
+      const t = Math.floor((totalSec % 1) * 10);
+
+      if (h > 0) {
+        return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${t}`;
+      }
+      return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${t}`;
+    }
+
+    function calculateWattsFromPace(sec) {
+      if (!sec || sec <= 0) return 0;
+      return Math.round(2.8 / Math.pow(sec / 500, 3));
+    }
+
+    function updateDashboard(data) {
+      if (data.elapsedTime !== undefined) playerTelemetry.elapsedTime = data.elapsedTime;
+      if (data.distance !== undefined) playerTelemetry.distance = data.distance;
+      if (data.pace !== undefined) playerTelemetry.pace = data.pace;
+      if (data.watts !== undefined) playerTelemetry.watts = data.watts;
+      if (data.spm !== undefined) playerTelemetry.spm = data.spm;
+      if (data.heartRate !== undefined) playerTelemetry.heartRate = data.heartRate;
+      if (data.calories !== undefined) playerTelemetry.calories = data.calories;
+      if (data.strokeState !== undefined) playerTelemetry.strokeState = data.strokeState;
+
+      // Zahájení nahrávání
+      if (!isRecording && playerTelemetry.elapsedTime > 0.5 && playerTelemetry.distance > 0) {
+        startWorkout();
+      }
+
+      if (isRecording) {
+        recordSample(playerTelemetry);
+      }
+
+      // Aktualizace stavu DUCHA v tomto čase
+      const gState = getGhostStateAtTime(playerTelemetry.elapsedTime);
+      ghostTelemetry.distance = gState.distance;
+      ghostTelemetry.pace = gState.pace;
+      ghostTelemetry.spm = gState.spm;
+      ghostTelemetry.heartRate = gState.hr;
+
+      // 1. Zobrazení tempa hráče a ducha
+      if (playerTelemetry.pace > 0) {
+        valPace.textContent = formatPace(playerTelemetry.pace);
+        if (playerTelemetry.watts === 0) {
+          playerTelemetry.watts = calculateWattsFromPace(playerTelemetry.pace);
+          valWatts.innerHTML = `${playerTelemetry.watts} <span style="font-size: 1rem; color: var(--text-muted);">W</span>`;
+        }
+      }
+      valGhostCurrentPace.textContent = formatPace(ghostTelemetry.pace);
+
+      // 2. Vzdálenost a čas
+      valDistance.innerHTML = `${Math.round(playerTelemetry.distance)} <span style="font-size: 1rem; color: var(--text-muted);">m</span>`;
+      valGhostDistance.textContent = `Duch: ${Math.round(ghostTelemetry.distance)} m`;
+      valTime.textContent = formatTime(playerTelemetry.elapsedTime);
+
+      // 3. Tepová frekvence a srovnání
+      if (playerTelemetry.heartRate > 0 && playerTelemetry.heartRate < 255) {
+        valHeartRate.textContent = `${playerTelemetry.heartRate} bpm`;
+        hudLiveHr.textContent = `${playerTelemetry.heartRate} bpm`;
+
+        const hrDiff = playerTelemetry.heartRate - ghostTelemetry.heartRate;
+        if (ghostTelemetry.heartRate > 0) {
+          const sign = hrDiff > 0 ? '+' : '';
+          const diffColor = hrDiff <= 0 ? '#86efac' : '#fca5a5';
+          valHrDiff.innerHTML = `Oproti duchu: <strong style="color: ${diffColor};">${sign}${hrDiff} bpm</strong>`;
+        }
+      } else {
+        valHeartRate.textContent = '-- bpm';
+        hudLiveHr.textContent = '-- bpm';
+        valHrDiff.textContent = 'Srovnání: --';
+      }
+      hudGhostHr.textContent = `${ghostTelemetry.heartRate} bpm`;
+
+      // 4. Výkon, kalorie, kadence
+      if (playerTelemetry.watts > 0) {
+        valWatts.innerHTML = `${Math.round(playerTelemetry.watts)} <span style="font-size: 1rem; color: var(--text-muted);">W</span>`;
+      }
+      if (playerTelemetry.calories > 0) {
+        valCalories.textContent = `${Math.round(playerTelemetry.calories)} Cal/hod`;
+      }
+      valSpm.innerHTML = `${playerTelemetry.spm} <span style="font-size: 1rem; color: var(--text-muted);">SPM</span>`;
+      valGhostSpm.textContent = `Duch: ${ghostTelemetry.spm} SPM`;
+
+      // 5. DELTA BADGE (Rozdíl v metrech)
+      const delta = playerTelemetry.distance - ghostTelemetry.distance;
+      const absDelta = Math.abs(Math.round(delta));
+
+      if (delta > 3) {
+        deltaBadge.className = 'delta-badge lead';
+        deltaIcon.textContent = '▲';
+        deltaText.textContent = `+${absDelta} m před duchem`;
+      } else if (delta < -3) {
+        deltaBadge.className = 'delta-badge behind';
+        deltaIcon.textContent = '▼';
+        deltaText.textContent = `-${absDelta} m za duchem`;
+      } else {
+        deltaBadge.className = 'delta-badge tied';
+        deltaIcon.textContent = '⟷';
+        deltaText.textContent = `Vyrovnaný souboj (±${absDelta} m)`;
+      }
+
+      if (playerTelemetry.distance > 0) {
+        workoutStatusText.textContent = `Probíhá závod s duchem (${Math.round((playerTelemetry.distance / currentGhost.distance) * 100)} %)`;
+      }
+    }
+
+    function startWorkout() {
+      isRecording = true;
+      workoutStartTime = new Date();
+      workoutSamples = [];
+      workoutStatusText.textContent = 'Závod zahájen!';
     }
 
     function recordSample(data) {
-      if (!isRecording) return;
-
-      const elapsedMissionSeconds = Math.max(0, (data.elapsedTime || 0) - workoutSession.startDuration);
-      const totalMissionSeconds = missionDurationMinutes * 60;
-      const progressRatio = Math.min(1.0, elapsedMissionSeconds / totalMissionSeconds);
-
-      // Aktualizace odpočtu
-      const remainingSec = Math.max(0, totalMissionSeconds - elapsedMissionSeconds);
-      missionCountdown.textContent = `Zbývá: ${formatTimeMinutes(remainingSec)}`;
-
-      // Hodnocení zóny
-      const zone = evaluateZone(data.pace, data.spm);
-      updateHud(zone);
-
-      // Generování energie a populace
-      const currentWatts = data.watts || calculateWattsFromPace(data.pace);
-      if (currentWatts > 0) {
-        const addedEnergy = (currentWatts * 0.5) * zoneMultiplier;
-        totalEnergyMW += addedEnergy;
-
-        // Populace roste s postupem fází a stabilitou
-        if (progressRatio > 0.4) {
-          population += Math.round((addedEnergy * 0.04) * (progressRatio));
-        }
+      if (workoutSamples.length === 0 || data.elapsedTime - workoutSamples[workoutSamples.length - 1].elapsedTime >= 1.0) {
+        workoutSamples.push({
+          timestamp: new Date().toISOString(),
+          elapsedTime: data.elapsedTime,
+          distance: data.distance,
+          pace: data.pace,
+          watts: data.watts,
+          spm: data.spm,
+          heartRate: data.heartRate,
+          ghostDistance: ghostTelemetry.distance,
+          ghostHr: ghostTelemetry.heartRate
+        });
       }
-
-      // Aktualizace ukazatele postupu
-      const pct = (progressRatio * 100);
-      terraProgressBar.style.width = `${pct.toFixed(1)}%`;
-      terraPercentText.textContent = `${pct.toFixed(0)} %`;
-
-      updateMilestoneSteps(progressRatio);
-
-      // Detekce dokončení mise
-      if (progressRatio >= 1.0 && !isMissionCompleted) {
-        isMissionCompleted = true;
-        finishWorkout();
-        return;
-      }
-
-      workoutSession.samples.push({
-        t: Date.now(),
-        distance: data.distance !== undefined ? data.distance : currentTelemetry.distance,
-        elapsedTime: data.elapsedTime !== undefined ? data.elapsedTime : currentTelemetry.elapsedTime,
-        pace: data.pace !== undefined ? data.pace : currentTelemetry.pace,
-        watts: currentWatts,
-        spm: data.spm !== undefined ? data.spm : currentTelemetry.spm,
-        heartRate: data.heartRate !== undefined ? data.heartRate : currentTelemetry.heartRate,
-        inZone: (zone === 'in-zone')
-      });
     }
 
-    function updateMilestoneSteps(ratio) {
-      step1.className = 'step-item ' + (ratio >= 0.2 ? 'completed' : (ratio > 0 ? 'active' : ''));
-      step2.className = 'step-item ' + (ratio >= 0.4 ? 'completed' : (ratio >= 0.2 ? 'active' : ''));
-      step3.className = 'step-item ' + (ratio >= 0.6 ? 'completed' : (ratio >= 0.4 ? 'active' : ''));
-      step4.className = 'step-item ' + (ratio >= 0.8 ? 'completed' : (ratio >= 0.6 ? 'active' : ''));
-      step5.className = 'step-item ' + (ratio >= 1.0 ? 'completed' : (ratio >= 0.8 ? 'active' : ''));
-
-      if (ratio < 0.2) terraStageText.textContent = '1. Inicializace atmosféry a ozónu';
-      else if (ratio < 0.4) terraStageText.textContent = '2. Kondenzace oceánů a hydrosféry';
-      else if (ratio < 0.6) terraStageText.textContent = '3. Šíření lesů a biosféry';
-      else if (ratio < 0.8) terraStageText.textContent = '4. Výstavba biosférických kolonií';
-      else if (ratio < 1.0) terraStageText.textContent = '5. Orbitální civilizace a prstence';
-      else terraStageText.textContent = '★ Terraformace 100% dokončena!';
-    }
-
-    function finishWorkout() {
-      isRecording = false;
-
-      const samples = workoutSession.samples;
-      let totalDist = 0;
-      let totalTime = 0;
-      let avgWatts = 0;
-      let avgPace = 0;
-
-      if (samples.length > 0) {
-        const last = samples[samples.length - 1];
-        totalDist = Math.max(0, last.distance - workoutSession.startDistance);
-        totalTime = Math.max(0, last.elapsedTime - workoutSession.startDuration);
-
-        let wattsSum = 0;
-        let paceSum = 0;
-        let count = 0;
-        for (const s of samples) {
-          if (s.pace > 0) {
-            paceSum += s.pace;
-            wattsSum += s.watts;
-            count++;
-          }
-        }
-        if (count > 0) {
-          avgWatts = Math.round(wattsSum / count);
-          avgPace = paceSum / count;
-        }
-      }
-
-      const zonePct = totalSamples > 0 ? Math.round((inZoneSamples / totalSamples) * 100) : 0;
-
-      // Zobrazení v modalu
-      document.getElementById('sumDistance').textContent = `${Math.round(totalDist)} m`;
-      document.getElementById('sumTime').textContent = formatTime(totalTime);
-      document.getElementById('sumZoneAdherence').textContent = `${zonePct} %`;
-      document.getElementById('sumPopulation').textContent = Math.round(population).toLocaleString('cs-CZ');
-      document.getElementById('sumPace').textContent = formatPace(avgPace);
-      document.getElementById('sumWatts').textContent = `${avgWatts} W`;
-
-      workoutSession.lastCalculated = {
-        distance: Math.round(totalDist),
-        durationSec: totalTime,
-        avgPaceSec: avgPace,
-        avgWatts: avgWatts,
-        zonePct: zonePct,
-        population: population,
-        samples: samples
-      };
-
-      openModal('modalWorkoutSummary');
-    }
-
-    btnManualFinish.addEventListener('click', finishWorkout);
-
-    // CSV export
-    btnDownloadCsv.addEventListener('click', () => {
-      const sum = workoutSession.lastCalculated;
-      if (!sum || !sum.samples || sum.samples.length === 0) {
-        alert('Žádná data ke stažení.');
-        return;
-      }
-
-      let csv = 'Timestamp,Elapsed_Sec,Distance_M,Pace_Sec_500m,Watts,SPM,HeartRate,InZone\n';
-      for (const s of sum.samples) {
-        csv += `${new Date(s.t).toISOString()},${s.elapsedTime.toFixed(1)},${s.distance.toFixed(1)},${s.pace.toFixed(1)},${Math.round(s.watts)},${s.spm},${s.heartRate},${s.inZone}\n`;
-      }
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `rowterra-colony-${new Date().toISOString().slice(0, 10)}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-
-    // === ANIMOVANÝ PLANET CANVAS ENGINE (60 FPS) ===
-    const canvas = document.getElementById('planetCanvas');
-    const ctx = canvas.getContext('2d');
-
-    // Generování hvězd v pozadí
-    const stars = [];
-    for (let i = 0; i < 120; i++) {
-      stars.push({
-        x: Math.random() * 960,
-        y: Math.random() * 380,
-        size: Math.random() * 1.8 + 0.5,
-        twinkle: Math.random() * Math.PI * 2
-      });
-    }
-
-    let planetAngle = 0;
-    let cloudAngle = 0;
-
-    function renderGameCanvas() {
-      // Šířka a výška podle rozlišení plátna
-      const width = canvas.width;
-      const height = canvas.height;
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const radius = 110;
-
-      ctx.clearRect(0, 0, width, height);
-
-      // 1. Hvězdné pozadí
-      for (const star of stars) {
-        star.twinkle += 0.03;
-        const alpha = 0.3 + (Math.sin(star.twinkle) * 0.3);
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Procento postupu (0.0 až 1.0)
-      const elapsed = isRecording ? Math.max(0, currentTelemetry.elapsedTime - workoutSession.startDuration) : 0;
-      const totalDuration = missionDurationMinutes * 60;
-      const progress = isRecording ? Math.min(1.0, elapsed / totalDuration) : 0.05;
-
-      // Rotace
-      planetAngle += 0.003;
-      cloudAngle += 0.006;
-
-      // 2. Vnější atmosféra (Atmospheric Outer Glow)
-      if (progress > 0.1) {
-        const atmoIntensity = Math.min(1.0, (progress - 0.1) / 0.3);
-        const atmoGlow = ctx.createRadialGradient(centerX, centerY, radius * 0.95, centerX, centerY, radius * 1.35);
-        atmoGlow.addColorStop(0, `rgba(6, 182, 212, ${0.45 * atmoIntensity})`);
-        atmoGlow.addColorStop(0.5, `rgba(59, 130, 246, ${0.2 * atmoIntensity})`);
-        atmoGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-        ctx.fillStyle = atmoGlow;
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius * 1.35, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 3. Základní těleso planety (s oříznutím pro kouli)
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-      ctx.clip();
-
-      // Základní barva povrchu: od nehostinného načervenalého prachu (fáze 0) k modrému oceánu (fáze 2+)
-      let baseGrad = ctx.createLinearGradient(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
-      if (progress < 0.25) {
-        // Pustá skála
-        baseGrad.addColorStop(0, '#574238');
-        baseGrad.addColorStop(1, '#1e1411');
-      } else {
-        // Voda / Oceán
-        const oceanBlue = '#0284c7';
-        const deepBlue = '#082f49';
-        baseGrad.addColorStop(0, oceanBlue);
-        baseGrad.addColorStop(1, deepBlue);
-      }
-      ctx.fillStyle = baseGrad;
-      ctx.fillRect(centerX - radius, centerY - radius, radius * 2, radius * 2);
-
-      // Kreslení kontinentů
-      ctx.save();
-      ctx.translate(centerX, centerY);
-
-      // Posun kontinentů rotací
-      const contOffset = (planetAngle * 60) % 200;
-
-      // Barva pevniny: hnědá -> zelená podle fáze biosféry
-      let landColor = '#785642'; // pustá země
-      if (progress > 0.4) {
-        // Postupný rozvoj zeleně
-        const greenFactor = Math.min(1.0, (progress - 0.4) / 0.3);
-        landColor = greenFactor > 0.7 ? '#15803d' : '#4d7c0f';
-      }
-
-      ctx.fillStyle = landColor;
-      for (let i = -2; i <= 2; i++) {
-        const cx = (i * 120) + contOffset - 60;
-        ctx.beginPath();
-        ctx.ellipse(cx, -20, 50, 35, 0.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.ellipse(cx + 30, 40, 45, 30, -0.2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Světla měst a kolonií na noční straně (od fáze 4 - 60%+)
-      if (progress > 0.6) {
-        ctx.fillStyle = 'rgba(250, 204, 21, 0.85)';
-        for (let i = -2; i <= 2; i++) {
-          const cx = (i * 120) + contOffset;
-          ctx.beginPath();
-          ctx.arc(cx - 15, -10, 2, 0, Math.PI * 2);
-          ctx.arc(cx + 10, -25, 2.5, 0, Math.PI * 2);
-          ctx.arc(cx + 5, 30, 2, 0, Math.PI * 2);
-          ctx.arc(cx + 35, 45, 3, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      // Mraky (Clouds) od fáze 2
-      if (progress > 0.2) {
-        const cloudAlpha = Math.min(0.55, (progress - 0.2) * 0.9);
-        ctx.fillStyle = `rgba(255, 255, 255, ${cloudAlpha})`;
-        const clOffset = (cloudAngle * 80) % 240;
-        for (let i = -2; i <= 2; i++) {
-          const cx = (i * 140) + clOffset - 40;
-          ctx.beginPath();
-          ctx.ellipse(cx, -45, 60, 16, 0.1, 0, Math.PI * 2);
-          ctx.ellipse(cx + 20, 15, 70, 18, -0.1, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      ctx.restore();
-
-      // 4. Stínování koule (3D Spherical Terminator / Shadow)
-      const lightGrad = ctx.createRadialGradient(
-        centerX - (radius * 0.4),
-        centerY - (radius * 0.4),
-        radius * 0.1,
-        centerX,
-        centerY,
-        radius
-      );
-      lightGrad.addColorStop(0, 'rgba(255, 255, 255, 0.25)');
-      lightGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0)');
-      lightGrad.addColorStop(0.85, 'rgba(0, 0, 0, 0.65)');
-      lightGrad.addColorStop(1, 'rgba(0, 0, 0, 0.92)');
-
-      ctx.fillStyle = lightGrad;
-      ctx.fillRect(centerX - radius, centerY - radius, radius * 2, radius * 2);
-
-      ctx.restore(); // Konec oříznutí koule
-
-      // 5. Orbitální prstenec a stanice (Fáze 5 - 80%+)
-      if (progress > 0.8) {
-        ctx.save();
-        ctx.strokeStyle = 'rgba(6, 182, 212, 0.6)';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.ellipse(centerX, centerY, radius * 1.45, radius * 0.45, -0.3, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Satelit obíhající po prstenci
-        const satAngle = planetAngle * 4;
-        const satX = centerX + Math.cos(satAngle) * (radius * 1.45);
-        const satY = centerY + Math.sin(satAngle) * (radius * 0.45);
-        ctx.fillStyle = '#f8fafc';
-        ctx.beginPath();
-        ctx.arc(satX, satY, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // 6. Laserový terraformační paprsek (aktivuje se při záběru)
-      if (beamIntensity > 0) {
-        ctx.save();
-        ctx.strokeStyle = `rgba(56, 189, 248, ${beamIntensity})`;
-        ctx.lineWidth = 4 + (beamIntensity * 4);
-        ctx.shadowColor = '#06b6d4';
-        ctx.shadowBlur = 20;
-
-        ctx.beginPath();
-        ctx.moveTo(width - 40, 30);
-        ctx.lineTo(centerX + (Math.sin(planetAngle * 5) * 30), centerY);
-        ctx.stroke();
-
-        // Jiskry v bodě dopadu
-        ctx.fillStyle = `rgba(255, 255, 255, ${beamIntensity})`;
-        ctx.beginPath();
-        ctx.arc(centerX + (Math.sin(planetAngle * 5) * 30), centerY, 10 * beamIntensity, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-        beamIntensity = Math.max(0, beamIntensity - 0.04);
-      }
-
-      requestAnimationFrame(renderGameCanvas);
-    }
-    requestAnimationFrame(renderGameCanvas);
-
-    // === CONCEPT2 TELEMETRIE & INTEGRACE ===
+    // =========================================================================
+    // 6. PM5 BLUETOOTH PŘIPOJENÍ
+    // =========================================================================
     const PM5_DISCOVERY_SERVICE = 'ce060000-43e5-11e4-916c-0800200c9a66';
     const PM5_ROWING_SERVICE = 'ce060030-43e5-11e4-916c-0800200c9a66';
-
     const PM5_CHAR_GENERAL_STATUS = 'ce060031-43e5-11e4-916c-0800200c9a66';
     const PM5_CHAR_ADDITIONAL_STATUS_1 = 'ce060032-43e5-11e4-916c-0800200c9a66';
     const PM5_CHAR_ADDITIONAL_STATUS_2 = 'ce060033-43e5-11e4-916c-0800200c9a66';
@@ -1332,7 +1610,6 @@
     const btnConnect = document.getElementById('btnConnect');
     const btnDisconnect = document.getElementById('btnDisconnect');
     const btnSimulate = document.getElementById('btnSimulate');
-    const btnFastForward = document.getElementById('btnFastForward');
     const statusDot = document.getElementById('statusDot');
     const statusText = document.getElementById('statusText');
 
@@ -1340,94 +1617,6 @@
     let isSimulating = false;
     let simInterval = null;
 
-    function formatPace(paceSec) {
-      if (!paceSec || paceSec <= 0 || paceSec > 600) return '--:--.-';
-      const minutes = Math.floor(paceSec / 60);
-      const seconds = Math.floor(paceSec % 60);
-      const tenths = Math.floor((paceSec % 1) * 10);
-      return `${minutes}:${seconds.toString().padStart(2, '0')}.${tenths}`;
-    }
-
-    function formatTime(totalSec) {
-      if (!totalSec || totalSec <= 0) return '00:00.0';
-      const minutes = Math.floor(totalSec / 60);
-      const seconds = Math.floor(totalSec % 60);
-      const tenths = Math.floor((totalSec % 1) * 10);
-      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${tenths}`;
-    }
-
-    function formatTimeMinutes(totalSec) {
-      const minutes = Math.floor(totalSec / 60);
-      const seconds = Math.floor(totalSec % 60);
-      return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-
-    function calculateWattsFromPace(paceSec) {
-      if (!paceSec || paceSec <= 0) return 0;
-      const paceRatio = paceSec / 500;
-      return Math.round(2.8 / Math.pow(paceRatio, 3));
-    }
-
-    function updateDashboard(data) {
-      if (data.pace !== undefined) currentTelemetry.pace = data.pace;
-      if (data.watts !== undefined) currentTelemetry.watts = data.watts;
-      if (data.calories !== undefined) currentTelemetry.calories = data.calories;
-      if (data.spm !== undefined) currentTelemetry.spm = data.spm;
-      if (data.distance !== undefined) currentTelemetry.distance = data.distance;
-      if (data.elapsedTime !== undefined) currentTelemetry.elapsedTime = data.elapsedTime;
-      if (data.heartRate !== undefined) currentTelemetry.heartRate = data.heartRate;
-
-      // Záblesk laseru při záběru (Drive)
-      if (data.strokeState === 2 || (data.watts && data.watts > 80)) {
-        beamIntensity = 0.9;
-      }
-
-      // Automatické zahájení tréninku při rozjezdu
-      if (!isRecording && data.elapsedTime > 0.5 && (data.distance > 0 || (data.pace > 0 && data.pace < 360))) {
-        startWorkout();
-      }
-
-      if (isRecording) {
-        recordSample(data);
-      }
-
-      if (data.pace !== undefined) {
-        valPace.textContent = formatPace(data.pace);
-        if (data.watts === undefined && data.pace > 0) {
-          const w = calculateWattsFromPace(data.pace);
-          currentTelemetry.watts = w;
-          valWatts.innerHTML = `${w} <span style="font-size: 1rem; color: var(--text-muted);">W</span>`;
-        }
-      }
-
-      if (data.watts !== undefined) {
-        valWatts.innerHTML = `${Math.round(data.watts)} <span style="font-size: 1rem; color: var(--text-muted);">W</span>`;
-      }
-
-      if (data.calories !== undefined) {
-        valCalories.textContent = `${Math.round(data.calories)} Cal/hod`;
-      }
-
-      if (data.spm !== undefined) {
-        valSpm.innerHTML = `${data.spm} <span style="font-size: 1rem; color: var(--text-muted);">SPM</span>`;
-      }
-
-      if (data.distance !== undefined) {
-        valDistance.innerHTML = `${data.distance.toFixed(0)} <span style="font-size: 1rem; color: var(--text-muted);">m</span>`;
-      }
-
-      if (data.elapsedTime !== undefined) {
-        valTime.textContent = formatTime(data.elapsedTime);
-      }
-
-      if (data.heartRate !== undefined) {
-        valHeartRate.textContent = data.heartRate > 0 && data.heartRate < 255
-          ? `${data.heartRate} bpm`
-          : '-- bpm';
-      }
-    }
-
-    // === PŘIPOJENÍ PŘES WEB BLUETOOTH ===
     async function connectPM5() {
       if (!navigator.bluetooth) {
         alert('Váš prohlížeč nepodporuje Web Bluetooth API. Prosím použijte Google Chrome nebo Microsoft Edge na PC/Mac/Androidu.');
@@ -1436,7 +1625,6 @@
 
       try {
         setConnectionStatus('connecting', 'Hledám monitor PM5 v dosahu...');
-
         bleDevice = await navigator.bluetooth.requestDevice({
           filters: [
             { namePrefix: 'PM5' },
@@ -1447,13 +1635,12 @@
         });
 
         bleDevice.addEventListener('gattserverdisconnected', onDisconnected);
+        setConnectionStatus('connecting', `Nalezen ${bleDevice.name || 'PM5'}, připojuji...`);
 
-        setConnectionStatus('connecting', `Nalezen ${bleDevice.name || 'PM5'}, navazuji spojení...`);
         const server = await bleDevice.gatt.connect();
-
         const service = await server.getPrimaryService(PM5_ROWING_SERVICE);
 
-        // 1. General Status
+        // General Status
         try {
           const charGeneral = await service.getCharacteristic(PM5_CHAR_GENERAL_STATUS);
           await charGeneral.startNotifications();
@@ -1468,7 +1655,7 @@
           console.warn('General Status nedostupný:', e);
         }
 
-        // 2. Additional Status 1
+        // Additional Status 1
         try {
           const charAdd1 = await service.getCharacteristic(PM5_CHAR_ADDITIONAL_STATUS_1);
           await charAdd1.startNotifications();
@@ -1484,7 +1671,7 @@
           console.warn('Additional Status 1 nedostupný:', e);
         }
 
-        // 3. Additional Status 2
+        // Additional Status 2
         try {
           const charAdd2 = await service.getCharacteristic(PM5_CHAR_ADDITIONAL_STATUS_2);
           await charAdd2.startNotifications();
@@ -1500,18 +1687,14 @@
           console.warn('Additional Status 2 nedostupný:', e);
         }
 
-        setConnectionStatus('connected', `Připojeno k: ${bleDevice.name || 'Concept2 PM5'}`);
+        setConnectionStatus('connected', `Připojeno: ${bleDevice.name || 'Concept2 PM5'}`);
         btnConnect.style.display = 'none';
         btnDisconnect.style.display = 'inline-flex';
         btnSimulate.disabled = true;
 
-      } catch (error) {
-        console.error('Chyba Bluetooth:', error);
-        if (error.name === 'NotFoundError') {
-          setConnectionStatus('disconnected', 'Párování zrušeno.');
-        } else {
-          setConnectionStatus('disconnected', `Chyba připojení: ${error.message}`);
-        }
+      } catch (err) {
+        console.error('Chyba Bluetooth:', err);
+        setConnectionStatus('disconnected', err.name === 'NotFoundError' ? 'Párování zrušeno.' : `Chyba: ${err.message}`);
       }
     }
 
@@ -1533,62 +1716,129 @@
       statusText.textContent = msg;
     }
 
-    // === DEMO SIMULACE (Normální rychlost & Zrychlená) ===
-    function toggleSimulation(fastForward = false) {
+    // =========================================================================
+    // 7. DEMO SIMULACE ZÁVODU
+    // =========================================================================
+    function toggleSimulation() {
       if (isSimulating) {
         clearInterval(simInterval);
         isSimulating = false;
-        btnSimulate.textContent = 'Demo LISS';
-        btnFastForward.textContent = 'Rychlá simulace';
+        btnSimulate.textContent = 'Demo závod';
         btnConnect.disabled = false;
         setConnectionStatus('disconnected', 'Simulace zastavena.');
       } else {
         isSimulating = true;
         btnConnect.disabled = true;
+        btnSimulate.textContent = 'Zastavit';
+        setConnectionStatus('connected', 'Běží Demo simulace (souboj proti duchovi)...');
 
-        if (fastForward) {
-          btnFastForward.textContent = 'Zastavit';
-          setConnectionStatus('connected', 'Běží zrychlená simulace (30× zrychlený vývoj světa)...');
-        } else {
-          btnSimulate.textContent = 'Zastavit';
-          setConnectionStatus('connected', 'Běží realistická LISS simulace (2:10 pace, 20 SPM)...');
-        }
-
-        let dist = 0;
-        let time = 0;
-        const timeStep = fastForward ? 15 : 0.5; // Zrychlení
+        let simDist = 0;
+        let simTime = 0;
 
         simInterval = setInterval(() => {
-          time += timeStep;
-          dist += (timeStep * 3.8);
+          simTime += 0.5;
+          // Závodní rychlost (cca 2:08 pace = 3.9 m/s)
+          simDist += (0.5 * 3.9);
 
-          // Simulujeme stabilní Zónu 2 s lehkou variací
-          const paceVariation = (Math.sin(time * 0.05) * 2);
-          const currentPace = targetPaceSeconds + paceVariation;
-          const currentWatts = calculateWattsFromPace(currentPace);
-
-          // Každé 3 vteřiny simulujeme záběr (Drive)
-          const strokeCycle = Math.floor(time) % 3;
-          const strokeState = strokeCycle === 0 ? 2 : 4;
+          const simPace = 128.5 + Math.sin(simTime * 0.1) * 3;
+          const simWatts = calculateWattsFromPace(simPace);
+          const simHr = Math.round(136 + (simTime * 0.02) + Math.sin(simTime * 0.05) * 4);
 
           updateDashboard({
-            pace: currentPace,
-            watts: currentWatts,
-            calories: 680,
-            spm: targetSpm,
-            strokeState: strokeState,
-            distance: dist,
-            elapsedTime: time,
-            heartRate: 138 + Math.round(Math.sin(time * 0.01) * 4)
+            elapsedTime: simTime,
+            distance: simDist,
+            pace: simPace,
+            watts: simWatts,
+            spm: 22,
+            heartRate: simHr,
+            calories: 720,
+            strokeState: Math.floor(simTime) % 3 === 0 ? 2 : 4
           });
         }, 500);
       }
     }
 
+    // =========================================================================
+    // 8. EXPORT CSV
+    // =========================================================================
+    function exportToCsv() {
+      if (workoutSamples.length === 0) {
+        alert('Zatím nejsou k dispozici žádná data tréninku k exportu.');
+        return;
+      }
+
+      let csv = 'Time(s),Distance(m),Pace(s/500m),Watts,SPM,HeartRate(bpm),GhostDistance(m),GhostHR(bpm)\n';
+      workoutSamples.forEach(s => {
+        csv += `${s.elapsedTime.toFixed(1)},${s.distance.toFixed(1)},${s.pace ? s.pace.toFixed(1) : ''},${s.watts || ''},${s.spm || ''},${s.heartRate || ''},${s.ghostDistance ? s.ghostDistance.toFixed(1) : ''},${s.ghostHr || ''}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `concept2_ghost_race_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // =========================================================================
+    // 9. EVENT LISTENERS & INICIALIZACE
+    // =========================================================================
     btnConnect.addEventListener('click', connectPM5);
     btnDisconnect.addEventListener('click', disconnectPM5);
-    btnSimulate.addEventListener('click', () => toggleSimulation(false));
-    btnFastForward.addEventListener('click', () => toggleSimulation(true));
+    btnSimulate.addEventListener('click', toggleSimulation);
+    document.getElementById('btnExportCsv').addEventListener('click', exportToCsv);
+
+    btnOpenLogbook.addEventListener('click', () => {
+      logbookModal.classList.add('active');
+      if (cachedWorkouts.length === 0 && inputToken.value.trim()) {
+        loadWorkoutsFromLogbook();
+      }
+    });
+
+    btnChangeGhost.addEventListener('click', () => {
+      logbookModal.classList.add('active');
+      if (cachedWorkouts.length === 0 && inputToken.value.trim()) {
+        loadWorkoutsFromLogbook();
+      }
+    });
+
+    btnCloseModal.addEventListener('click', () => {
+      logbookModal.classList.remove('active');
+    });
+
+    btnFetchWorkouts.addEventListener('click', loadWorkoutsFromLogbook);
+
+    // Filtry v modalu
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', (e) => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        e.target.classList.add('active');
+        const filter = e.target.getAttribute('data-filter');
+        if (cachedWorkouts.length > 0 || filter === 'preset') {
+          renderWorkoutsList(cachedWorkouts, filter);
+        }
+      });
+    });
+
+    // Výchozí inicializace ducha s reálným tréninkem 12k z 6. 11.
+    window.addEventListener('DOMContentLoaded', () => {
+      selectPresetGhost({
+        id: '122548787',
+        title: '6. 11. 2026 – 12 078 m (LISS)',
+        date: '6. 11. 2026',
+        distance: 12078,
+        totalTime: 3619.3,
+        avgPace: 149.8,
+        avgHr: 124
+      });
+
+      // Pokud máme token, rovnou zkusíme načíst skutečná data na pozadí
+      if (inputToken.value.trim()) {
+        loadWorkoutsFromLogbook();
+      }
+    });
   </script>
 </body>
 
